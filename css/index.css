@@ -1,0 +1,288 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:        #0b0b0b;
+    --surface:   #141414;
+    --border:    #252525;
+    --accent:    #e8ff47;
+    --accent-dim:#b8cc30;
+    --text:      #f0f0f0;
+    --muted:     #555;
+    --danger:    #ff4747;
+
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body:    'Barlow Condensed', sans-serif;
+    --font-mono:    'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+}
+
+/* ── HEADER ── */
+header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: clamp(2rem, 6vw, 3.5rem);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    animation: fadeDown 0.5s ease both;
+}
+
+.label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--text);
+}
+
+h1 span {
+    color: var(--accent);
+}
+
+.subtitle {
+    margin-top: 0.6rem;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    animation: fadeDown 0.5s 0.1s ease both;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+
+.progress-header span {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.progress-header strong {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+}
+
+.bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 25%; /* ajusta según el progreso real */
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── GRID ── */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+@media (min-width: 480px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 700px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── CARD ── */
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1rem 0.85rem;
+    text-decoration: none;
+    color: var(--text);
+    overflow: hidden;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+    opacity: 0;
+    animation: fadeUp 0.4s ease both;
+}
+
+/* stagger delay via inline style set by JS */
+.card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    background: #1a1a0e;
+}
+
+.card:active { transform: translateY(0); }
+
+/* accent stripe on hover */
+.card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.2s ease;
+}
+
+.card:hover::after { transform: scaleY(1); }
+
+.card-week {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.card-number {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 7vw, 2.8rem);
+    line-height: 1;
+    color: var(--text);
+    transition: color 0.18s ease;
+}
+
+.card:hover .card-number { color: var(--accent); }
+
+.card-meta {
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.card-dates {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    line-height: 1.6;
+    transition: color 0.18s ease;
+}
+
+.card:hover .card-dates { color: var(--accent-dim); }
+
+.card-arrow {
+    color: var(--muted);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-left: 0.4rem;
+    transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.card:hover .card-arrow {
+    color: var(--accent);
+    transform: translateX(3px);
+}
+
+/* ── FOOTER ── */
+footer {
+    margin-top: clamp(2rem, 6vw, 3rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    animation: fadeDown 0.5s 0.2s ease both;
+}
+
+footer span {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.4em;
+    animation: pulse 2s ease infinite;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
