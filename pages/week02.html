@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrailCoach · Semana 02 · TGC 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f0d;
+    --surface: #161814;
+    --surface2: #1d2019;
+    --border: #2a2e26;
+    --accent: #c8e04a;
+    --accent2: #e08a2a;
+    --warn: #e04a4a;
+    --ok: #4ae08a;
+    --blue: #4a9ee0;
+    --text: #e8ead4;
+    --muted: #7a8068;
+    --green-dark: #1e2a14;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 0.3rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 1.1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .badge strong { color: var(--accent); display: block; font-size: 1.1rem; letter-spacing: 0; text-transform: none; }
+
+  /* ALERT */
+  .alert {
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    border: 1px solid transparent;
+  }
+  .alert-warn { background: rgba(224,74,74,0.08); border-color: rgba(224,74,74,0.25); }
+  .alert-ok   { background: rgba(74,224,138,0.07); border-color: rgba(74,224,138,0.2); }
+  .alert-info { background: rgba(200,224,74,0.07); border-color: rgba(200,224,74,0.2); }
+  .alert-blue { background: rgba(74,158,224,0.07); border-color: rgba(74,158,224,0.2); }
+  .alert-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .alert-title { font-weight: 700; margin-bottom: 0.3rem; }
+  .alert-warn .alert-title { color: var(--warn); }
+  .alert-ok .alert-title   { color: var(--ok); }
+  .alert-info .alert-title { color: var(--accent); }
+  .alert-blue .alert-title { color: var(--blue); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 2rem 0 1rem;
+    text-transform: uppercase;
+  }
+
+  /* OBJETIVO SEMANA */
+  .objetivo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 500px) { .objetivo-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .obj-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 0.8rem;
+    text-align: center;
+  }
+
+  .obj-card .obj-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .obj-card .obj-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: 0.3rem;
+  }
+
+  /* WEEK GRID */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .day-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .day-card.rest::after   { background: var(--muted); }
+  .day-card.run::after    { background: var(--accent); }
+  .day-card.recov::after  { background: var(--blue); }
+  .day-card.fuerza::after { background: var(--accent2); }
+
+  .day-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .day-card.active { border-color: var(--accent); background: var(--surface2); }
+
+  .day-name { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .day-num  { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--text); line-height: 1.1; }
+  .day-tag  { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.3rem; font-weight: 600; }
+
+  .tag-rest   { color: var(--muted); }
+  .tag-run    { color: var(--accent); }
+  .tag-recov  { color: var(--blue); }
+  .tag-fuerza { color: var(--accent2); }
+
+  /* DAY DETAIL */
+  #day-detail {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-top: 0.8rem;
+    min-height: 140px;
+    transition: border-color 0.3s;
+  }
+
+  #day-detail h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.05em; margin-bottom: 0.8rem; }
+  #day-detail p  { color: var(--text); opacity: 0.9; line-height: 1.7; }
+  #day-detail .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.8rem; }
+  #day-detail .detail-item { background: var(--surface2); border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.83rem; }
+  #day-detail .detail-item span { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 0.1rem; }
+  #day-detail .tip { background: rgba(200,224,74,0.06); border: 1px solid rgba(200,224,74,0.15); border-radius: 8px; padding: 0.7rem 1rem; margin-top: 0.8rem; font-size: 0.82rem; color: var(--accent); }
+
+  /* FUERZA CARDS */
+  .fuerza-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 500px) { .fuerza-grid { grid-template-columns: 1fr; } }
+
+  .fuerza-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent2);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+
+  .fuerza-card h4 { font-weight: 700; color: var(--accent2); margin-bottom: 0.5rem; font-size: 0.9rem; }
+  .fuerza-card ul { padding-left: 1.2rem; font-size: 0.83rem; color: var(--muted); line-height: 1.8; }
+  .fuerza-card ul li strong { color: var(--text); }
+
+  /* RULES */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 500px) { .rules-grid { grid-template-columns: 1fr; } }
+
+  .rule-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .rule-card .rule-icon { font-size: 1.1rem; margin-bottom: 0.3rem; }
+  .rule-card strong { color: var(--accent); }
+
+  /* ANALOGY */
+  .analogy {
+    background: linear-gradient(135deg, var(--green-dark), #141a0e);
+    border: 1px solid rgba(200,224,74,0.15);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .analogy::before {
+    content: '"';
+    position: absolute;
+    top: -0.5rem; left: 1rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    color: var(--accent);
+    opacity: 0.15;
+    line-height: 1;
+  }
+
+  .analogy p { font-size: 0.92rem; line-height: 1.75; padding-left: 0.5rem; }
+  .analogy strong { color: var(--accent); }
+  .analogy .source { margin-top: 0.6rem; font-size: 0.76rem; color: var(--muted); padding-left: 0.5rem; }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 1.5rem; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .progress-bar { background: var(--surface2); border-radius: 99px; height: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; background: var(--accent); }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    text-align: center;
+    font-size: 0.76rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-top: 3rem;
+  }
+
+  /* NAV */
+  .nav-weeks {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .nav-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nav-btn.active { background: rgba(200,224,74,0.1); border-color: var(--accent); color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .container > * { animation: fadeUp 0.4s ease both; }
+  .container > *:nth-child(1) { animation-delay: 0.05s; }
+  .container > *:nth-child(2) { animation-delay: 0.10s; }
+  .container > *:nth-child(3) { animation-delay: 0.15s; }
+  .container > *:nth-child(4) { animation-delay: 0.20s; }
+  .container > *:nth-child(5) { animation-delay: 0.25s; }
+  .container > *:nth-child(6) { animation-delay: 0.30s; }
+  .container > *:nth-child(7) { animation-delay: 0.35s; }
+  .container > *:nth-child(8) { animation-delay: 0.40s; }
+  .container > *:nth-child(9) { animation-delay: 0.45s; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- NAV -->
+  <div class="nav-weeks">
+    <a href="week01.html" class="nav-btn">← Semana 01</a>
+    <a href="week02.html" class="nav-btn active">Semana 02</a>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>Semana 02</h1>
+      <p>TrailCoach · Mario Monzón · 25 – 31 Mayo 2026</p>
+    </div>
+    <div class="badge">
+      <strong>Fase 1</strong>
+      Recuperación de Base
+    </div>
+  </div>
+
+  <!-- ALERTA POSITIVA -->
+  <div class="alert alert-ok">
+    <div class="alert-icon">🟢</div>
+    <div>
+      <div class="alert-title">¡Aquí empieza la construcción real!</div>
+      <p>La semana 01 fue recuperación. Esta semana <strong>empezamos a entrenar de verdad</strong>: más kilómetros, ritmo más estructurado, y arranca la <strong>fuerza funcional trail</strong>. El cuerpo está listo. El plan también.</p>
+    </div>
+  </div>
+
+  <!-- OBJETIVOS SEMANA -->
+  <div class="section-title">🎯 Objetivos de la semana</div>
+
+  <div class="objetivo-grid">
+    <div class="obj-card">
+      <div class="obj-val">30</div>
+      <div class="obj-label">km objetivo</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-val">0</div>
+      <div class="obj-label">desnivel D+</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-val">4</div>
+      <div class="obj-label">días activos</div>
+    </div>
+    <div class="obj-card">
+      <div class="obj-val">2</div>
+      <div class="obj-label">sesiones fuerza</div>
+    </div>
+  </div>
+
+  <!-- PROGRESO TGC -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>🏔️ Progreso TGC Advanced 2027</span>
+      <span>Semana 2 / 40</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 5%"></div>
+    </div>
+  </div>
+
+  <!-- CALENDARIO INTERACTIVO -->
+  <div class="section-title">📅 Tu semana — Toca cada día</div>
+
+  <div class="week-grid">
+    <div class="day-card rest" onclick="showDay('lun')">
+      <div class="day-name">Lun</div>
+      <div class="day-num">25</div>
+      <div class="day-tag tag-rest">Descanso</div>
+    </div>
+    <div class="day-card run" onclick="showDay('mar')">
+      <div class="day-name">Mar</div>
+      <div class="day-num">26</div>
+      <div class="day-tag tag-run">Rodaje Z2</div>
+    </div>
+    <div class="day-card fuerza" onclick="showDay('mie')">
+      <div class="day-name">Mié</div>
+      <div class="day-num">27</div>
+      <div class="day-tag tag-fuerza">Fuerza 1</div>
+    </div>
+    <div class="day-card run" onclick="showDay('jue')">
+      <div class="day-name">Jue</div>
+      <div class="day-num">28</div>
+      <div class="day-tag tag-run">Rodaje Z2</div>
+    </div>
+    <div class="day-card fuerza" onclick="showDay('vie')">
+      <div class="day-name">Vie</div>
+      <div class="day-num">29</div>
+      <div class="day-tag tag-fuerza">Fuerza 2</div>
+    </div>
+    <div class="day-card rest" onclick="showDay('sab')">
+      <div class="day-name">Sáb</div>
+      <div class="day-num">30</div>
+      <div class="day-tag tag-rest">Descanso</div>
+    </div>
+    <div class="day-card run" onclick="showDay('dom')">
+      <div class="day-name">Dom</div>
+      <div class="day-num">31</div>
+      <div class="day-tag tag-run">Largo</div>
+    </div>
+  </div>
+
+  <div id="day-detail">
+    <h3 style="color:var(--muted)">👆 Toca un día para ver los detalles</h3>
+    <p>Esta semana hay 4 días activos y 2 sesiones de fuerza funcional trail.</p>
+  </div>
+
+  <!-- FUERZA FUNCIONAL -->
+  <div class="section-title">💪 Fuerza Funcional Trail — Arranca esta semana</div>
+
+  <div class="alert alert-blue">
+    <div class="alert-icon">ℹ️</div>
+    <div>
+      <div class="alert-title">¿Por qué fuerza desde ya?</div>
+      <p>Los 4.300m D+ de la TGC destruyen a los corredores que solo entrenan corriendo. Los glúteos, el core y los tobillos son los que evitan la lesión en el km 60. <strong>Empezar en el Mes 1 es la única manera de que estén listos en el Mes 12.</strong></p>
+    </div>
+  </div>
+
+  <div class="fuerza-grid">
+    <div class="fuerza-card">
+      <h4>🦵 Sesión A — Glúteos y pierna</h4>
+      <ul>
+        <li><strong>Sentadilla búlgara</strong> — 3×10 cada pierna</li>
+        <li><strong>Hip thrust</strong> — 3×15 (con mochila si tienes)</li>
+        <li><strong>Step-up en escalón</strong> — 3×12 cada pierna</li>
+        <li><strong>Zancada inversa</strong> — 3×10 cada pierna</li>
+        <li><strong>Elevación de talones</strong> — 3×20 (tobillo)</li>
+      </ul>
+    </div>
+    <div class="fuerza-card">
+      <h4>🧱 Sesión B — Core y estabilidad</h4>
+      <ul>
+        <li><strong>Plancha frontal</strong> — 3×45 seg</li>
+        <li><strong>Bird-dog</strong> — 3×12 cada lado</li>
+        <li><strong>Dead bug</strong> — 3×10 cada lado</li>
+        <li><strong>Plancha lateral</strong> — 3×30 seg cada lado</li>
+        <li><strong>Puente de glúteo a una pierna</strong> — 3×12</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- REGLAS DE LA SEMANA -->
+  <div class="section-title">⚠️ Reglas de la semana</div>
+
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-icon">🫀</div>
+      <strong>Z2 estricto en rodajes</strong>
+      <p style="margin-top:0.3rem;font-size:0.82rem;color:var(--muted)">Todos los rodajes esta semana son Zona 2. FC por debajo de 150 ppm. Si el reloj vibra, bajas el ritmo — aunque te parezca demasiado lento.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">⛰️</div>
+      <strong>Cero desnivel todavía</strong>
+      <p style="margin-top:0.3rem;font-size:0.82rem;color:var(--muted)">El trail llega en los meses 3-4. Esta semana: asfalto llano de Arinaga o cinta. No hay prisa — el Guayadeque no se va a mover.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">📈</div>
+      <strong>+10% máximo de volumen</strong>
+      <p style="margin-top:0.3rem;font-size:0.82rem;color:var(--muted)">De 25km (semana 01) a 30km (semana 02). Eso es el 20% — ya es el techo. No añadas un metro más aunque te sobre energía.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-icon">🧠</div>
+      <strong>Cero euforia en los rodajes</strong>
+      <p style="margin-top:0.3rem;font-size:0.82rem;color:var(--muted)">Acuerdo del entrenador-atleta: si reportas que apretaste porque estabas bien, TrailCoach lo señala. No como crítica — como entrenamiento mental para la TGC.</p>
+    </div>
+  </div>
+
+  <!-- ANALOGÍA -->
+  <div class="analogy">
+    <p>Construir la base aeróbica es como <strong>hacer los cimientos de una casa</strong>. No se ven, nadie los celebra, pero sin ellos la casa se cae en el primer terremoto. Los km 60-82 de la TGC son ese terremoto. Los cimientos se construyen ahora, en los rodajes lentos de Arinaga, no el día de la carrera en Teror.</p>
+    <div class="source">— Fase 1 · Semanas 1-8 · Recuperación de Base</div>
+  </div>
+
+  <!-- NOTA ZAPATILLA -->
+  <div class="alert alert-info">
+    <div class="alert-icon">👟</div>
+    <div>
+      <div class="alert-title">Zapatilla esta semana: Paradigm 8</div>
+      <p>Seguimos en asfalto y seguimos con la Paradigm 8. La Timp 5 de trail llega en los meses 3-4 cuando empiece Guayadeque. No hay nada que decidir sobre material esta semana.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    TrailCoach · Mario Monzón · Semana 02 / 40 · TGC Advanced 2027<br>
+    Fase 1 — Recuperación de Base · 25 al 31 de Mayo 2026
+  </div>
+</div>
+
+<script>
+  const days = {
+    lun: {
+      color: 'var(--muted)',
+      title: '🛌 Lunes 25 — Descanso',
+      desc: 'Día de descanso entre semanas. Aprovecha para planificar la semana: ¿a qué hora vas a correr el martes? ¿Tienes espacio en casa para hacer la sesión de fuerza del miércoles? <strong>Planificar la semana el lunes es parte del entrenamiento.</strong>',
+      items: [
+        { label: 'Tipo', val: 'Descanso' },
+        { label: 'Actividad', val: 'Ninguna' },
+        { label: 'Zapatilla', val: '—' },
+        { label: 'Tarea', val: 'Planificar la semana' }
+      ],
+      tip: null
+    },
+    mar: {
+      color: 'var(--accent)',
+      title: '🟢 Martes 26 — Rodaje Z2',
+      desc: 'Primer rodaje de la semana. <strong>Zona 2 estricta</strong> — FC por debajo de 150 ppm todo el rato. Si tienes que bajar a caminar 30 segundos para bajar la FC, hazlo sin dudar. El objetivo no es el ritmo, es el tiempo en zona aeróbica. Céntrate en la respiración: si puedes hablar frases completas, vas bien.',
+      items: [
+        { label: 'Distancia', val: '8 – 9 km' },
+        { label: 'Tiempo', val: '55 – 65 min' },
+        { label: 'Ritmo', val: '6:30 – 7:00 /km' },
+        { label: 'FC objetivo', val: '< 150 ppm (Z2)' },
+        { label: 'Zapatilla', val: 'Paradigm 8' },
+        { label: 'Zona', val: 'Arinaga / cinta' }
+      ],
+      tip: '💡 Si usas la cinta: velocidad 8.5-9 km/h, inclinación 1%. Pon una serie o podcast — el tiempo de Z2 se hace más llevadero.'
+    },
+    mie: {
+      color: 'var(--accent2)',
+      title: '🟠 Miércoles 27 — Fuerza A (Glúteos y pierna)',
+      desc: '<strong>Primera sesión de fuerza funcional trail.</strong> Sesión A: glúteos, cuádriceps y tobillo. No hace falta gimnasio — en casa con tu propio peso sobra para empezar. Descansa 60-90 segundos entre series. Si algún ejercicio no conoces, busca en YouTube el nombre exacto.',
+      items: [
+        { label: 'Tipo', val: 'Fuerza funcional' },
+        { label: 'Duración', val: '35 – 45 min' },
+        { label: 'Material', val: 'Peso corporal (+ mochila opcional)' },
+        { label: 'Descanso', val: '60-90 seg entre series' },
+        { label: 'Zapatilla', val: 'Zapatillas de casa / descalzo' },
+        { label: 'Sesión', val: 'Sesión A — ver tabla arriba' }
+      ],
+      tip: '⚠️ Si al día siguiente (jueves) notas agujetas fuertes en piernas, avísame y ajustamos el rodaje. Es normal tenerlas el primer día.'
+    },
+    jue: {
+      color: 'var(--accent)',
+      title: '🟢 Jueves 28 — Rodaje Z2',
+      desc: 'Segundo rodaje de la semana. Puede que tengas algo de agujetas por la fuerza del miércoles — <strong>el trote suave las alivia, no las empeora</strong>. Mismas reglas que el martes: FC por debajo de 150, ritmo conversacional. Si las agujetas son muy fuertes, recortas a 6-7km sin drama.',
+      items: [
+        { label: 'Distancia', val: '9 – 10 km' },
+        { label: 'Tiempo', val: '60 – 70 min' },
+        { label: 'Ritmo', val: '6:20 – 6:50 /km' },
+        { label: 'FC objetivo', val: '< 150 ppm (Z2)' },
+        { label: 'Zapatilla', val: 'Paradigm 8' },
+        { label: 'Zona', val: 'Arinaga / cinta' }
+      ],
+      tip: '💡 Si tienes agujetas del miércoles: empieza 2 km más lento de lo normal y decide sobre la marcha. El cuerpo sabe.'
+    },
+    vie: {
+      color: 'var(--accent2)',
+      title: '🟠 Viernes 29 — Fuerza B (Core y estabilidad)',
+      desc: '<strong>Segunda sesión de fuerza — Sesión B: core y estabilidad.</strong> Esta sesión protege tu columna en las 10-14 horas que estarás en movimiento en la TGC. No duele, no agota, pero es de lo más importante que harás en toda la preparación. Sin impacto, sin correr — el cuerpo descansa de los rodajes mientras trabaja.',
+      items: [
+        { label: 'Tipo', val: 'Core y estabilidad' },
+        { label: 'Duración', val: '30 – 40 min' },
+        { label: 'Material', val: 'Solo peso corporal' },
+        { label: 'Descanso', val: '45-60 seg entre series' },
+        { label: 'Zapatilla', val: 'Descalzo o calcetines' },
+        { label: 'Sesión', val: 'Sesión B — ver tabla arriba' }
+      ],
+      tip: '💡 Pon música y hazlo con calma. Esta sesión no cansa — es activa pero no fatigante. Perfecto antes del largo del domingo.'
+    },
+    sab: {
+      color: 'var(--muted)',
+      title: '🛌 Sábado 30 — Descanso',
+      desc: 'Descanso antes del largo del domingo. Un paseo tranquilo está bien, pero sin zapatillas de correr. <strong>Hidratación, sueño 7-8h, y prepara mentalmente el largo.</strong> Piensa la ruta: Costa de Arinaga hasta Playa Vargas y vuelta es perfecta para 12-14km sin desnivel.',
+      items: [
+        { label: 'Tipo', val: 'Descanso' },
+        { label: 'Actividad', val: 'Paseo suave opcional' },
+        { label: 'Zapatilla', val: '—' },
+        { label: 'Prioridad', val: 'Dormir 7-8h' }
+      ],
+      tip: null
+    },
+    dom: {
+      color: 'var(--accent2)',
+      title: '🟠 Domingo 31 — Rodaje largo',
+      desc: '<strong>El rodaje más importante de la semana.</strong> Largo en Z2 absoluta. Este es el kilómetro que más importa de toda la semana — pero también el que más fácil debe sentirse. Sin ritmo objetivo, sin alerta de Garmin. Solo tiempo en movimiento. Si en algún momento superas 150 ppm, bajas a caminar hasta que baje. <strong>Sin excepción.</strong>',
+      items: [
+        { label: 'Distancia', val: '13 – 15 km' },
+        { label: 'Tiempo', val: '90 – 105 min' },
+        { label: 'Ritmo', val: '6:40 – 7:20 /km' },
+        { label: 'FC objetivo', val: '< 148 ppm (Z2)' },
+        { label: 'Zapatilla', val: 'Paradigm 8' },
+        { label: 'Zona', val: 'Costa Arinaga – Playa Vargas' }
+      ],
+      tip: '⚠️ Riesgo euforia: si a los 10km te sientes bien y quieres apretar, no lo hagas. Ese impulso lo guardamos para Maspalomas en 2027.'
+    }
+  };
+
+  function showDay(key) {
+    const d = days[key];
+    const itemsHtml = d.items.map(i =>
+      `<div class="detail-item"><span>${i.label}</span>${i.val}</div>`
+    ).join('');
+
+    const tipHtml = d.tip ? `<div class="tip">${d.tip}</div>` : '';
+
+    document.getElementById('day-detail').style.borderColor = d.color;
+    document.getElementById('day-detail').innerHTML = `
+      <h3 style="color:${d.color}">${d.title}</h3>
+      <p style="margin:0 0 0.8rem">${d.desc}</p>
+      <div class="detail-grid">${itemsHtml}</div>
+      ${tipHtml}
+    `;
+
+    document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>
