@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Nutricional Vegetariano — Mario</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:    #2D6A4F;
+    --green-l:  #52B788;
+    --green-xl: #D8F3DC;
+    --cream:    #FAFAF7;
+    --ink:      #1A1A14;
+    --ink-2:    #4A4A3A;
+    --ink-3:    #8A8A7A;
+    --border:   #E4E4D8;
+    --white:    #FFFFFF;
+    --amber:    #C77B2B;
+    --amber-l:  #FFF3DC;
+    --blue:     #1D5B8B;
+    --blue-l:   #DCF0FF;
+    --red:      #B34040;
+    --red-l:    #FFE8E8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--green);
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 30%;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .header-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--green-l);
+    margin-bottom: .75rem;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: .5rem;
+  }
+  header h1 em { font-style: italic; color: var(--green-l); }
+  .header-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 2rem;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    background: rgba(255,255,255,.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .stat {
+    flex: 1;
+    min-width: 100px;
+    background: rgba(0,0,0,.18);
+    padding: .9rem 1.2rem;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: #fff;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,.55);
+    margin-top: 4px;
+    letter-spacing: .05em;
+  }
+
+  /* ── NAV TABS ── */
+  .nav {
+    max-width: 900px;
+    margin: 2rem auto 0;
+    padding: 0 1.5rem;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .nav-btn:hover { border-color: var(--green-l); color: var(--green); }
+  .nav-btn.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .nav-btn .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: .6;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SECTION HEADER ── */
+  .section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .section-head h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    color: var(--ink);
+  }
+  .section-head h2 em { font-style: italic; color: var(--green); }
+  .macro-summary {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ms-pill {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+  .ms-p { background: var(--blue-l); color: var(--blue); border-color: #aad4f0; }
+  .ms-c { background: var(--green-xl); color: var(--green); border-color: #9dd4b4; }
+  .ms-f { background: var(--amber-l); color: var(--amber); border-color: #f0c884; }
+  .ms-k { background: #f0f0e8; color: var(--ink-2); border-color: var(--border); }
+
+  /* ── MEAL GRID ── */
+  .meal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* ── MEAL CARD ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,.07); }
+
+  .card-top {
+    padding: 1.4rem 1.4rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .card-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--green-xl);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin-bottom: 5px;
+    line-height: 1.25;
+  }
+  .card-tagline {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .card-kcal {
+    background: var(--green);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 13px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  @media (max-width: 560px) {
+    .card-body { grid-template-columns: 1fr; }
+  }
+
+  /* macros */
+  .card-macros {
+    padding: 1.1rem 1.4rem;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  @media (max-width: 560px) {
+    .card-macros { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+  .macro-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 4px;
+  }
+  .macro-val { font-weight: 600; color: var(--ink); }
+  .bar-bg {
+    height: 6px;
+    background: #f0f0e8;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 99px; }
+  .bar-p { background: #378ADD; }
+  .bar-c { background: #52B788; }
+  .bar-f { background: #C77B2B; }
+
+  /* ingredients */
+  .card-ingredients {
+    padding: 1.1rem 1.4rem;
+  }
+  .ing-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .ing-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ing-list li {
+    font-size: 13px;
+    color: var(--ink-2);
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.4;
+  }
+  .ing-list li::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green-l);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  /* prep */
+  .card-prep {
+    grid-column: 1 / -1;
+    padding: 1rem 1.4rem 1.4rem;
+    border-top: 1px solid var(--border);
+  }
+  .prep-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    counter-reset: step;
+  }
+  .step {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    counter-increment: step;
+  }
+  .step::before {
+    content: counter(step);
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--green-xl);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  /* tip badge */
+  .tip {
+    grid-column: 1 / -1;
+    margin: 0 1.4rem 1.4rem;
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 8px 8px 0;
+    padding: .65rem 1rem;
+    font-size: 12px;
+    color: var(--amber);
+    line-height: 1.5;
+  }
+  .tip strong { font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--border);
+  }
+  footer strong { color: var(--green); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <p class="header-tag">Plan nutricional personalizado · Mayo 2026</p>
+    <h1>Nutrición <em>ovo-láctea</em><br>vegetariana</h1>
+    <p class="header-sub">20 platos diseñados para pérdida de grasa sostenida. Sin carne, sin pescado. Con ciencia detrás de cada gramo.</p>
+    <div class="stats">
+      <div class="stat"><div class="stat-val">1.886</div><div class="stat-label">kcal / día</div></div>
+      <div class="stat"><div class="stat-val">168 g</div><div class="stat-label">proteína</div></div>
+      <div class="stat"><div class="stat-val">189 g</div><div class="stat-label">carbohidratos</div></div>
+      <div class="stat"><div class="stat-val">51 g</div><div class="stat-label">grasa</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="show('desayuno', this)"><span class="dot"></span>Desayuno · 470 kcal</button>
+  <button class="nav-btn" onclick="show('comida', this)"><span class="dot"></span>Comida · 660 kcal</button>
+  <button class="nav-btn" onclick="show('snack', this)"><span class="dot"></span>Snack · 283 kcal</button>
+  <button class="nav-btn" onclick="show('cena', this)"><span class="dot"></span>Cena · 473 kcal</button>
+</nav>
+
+<main>
+
+<!-- ══════════════ DESAYUNOS ══════════════ -->
+<div id="panel-desayuno" class="panel active">
+  <div class="section-head">
+    <h2>Buenos <em>días</em></h2>
+    <div class="macro-summary">
+      <span class="ms-pill ms-k">470 kcal</span>
+      <span class="ms-pill ms-p">P: 40 g</span>
+      <span class="ms-pill ms-c">C: 50 g</span>
+      <span class="ms-pill ms-f">G: 13 g</span>
+    </div>
+  </div>
+  <div class="meal-grid">
+
+    <!-- D1 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">01</span>
+          <div>
+            <h3 class="card-title">Bowl proteico de yogur griego y avena</h3>
+            <p class="card-tagline">Cremoso, saciante y listo en 5 minutos. El rey de los desayunos sin excusas.</p>
+          </div>
+        </div>
+        <span class="card-kcal">468 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">41 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:68%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">49 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:52%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">12 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:47%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>300 g yogur griego 0% Hacendado</li>
+            <li>50 g copos de avena finos</li>
+            <li>100 g fresas frescas</li>
+            <li>15 g mantequilla de almendra natural</li>
+            <li>Canela en polvo al gusto</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Vierte el yogur griego en un bol amplio.</div>
+            <div class="step">Añade los copos de avena y mezcla bien. Déjalo reposar 3 minutos para que la avena absorba el líquido.</div>
+            <div class="step">Trocea las fresas y colócalas encima.</div>
+            <div class="step">Añade la mantequilla de almendra en el centro y espolvorea canela.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Prepáralo la noche anterior en un tarro — overnight oats — y ahorra tiempo por la mañana. La avena así hidratada es más fácil de digerir.</div>
+      </div>
+    </div>
+
+    <!-- D2 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">02</span>
+          <div>
+            <h3 class="card-title">Tortilla de 3 huevos con tostadas y queso fresco</h3>
+            <p class="card-tagline">Clásico reinventado. Alta proteína, carbos de calidad, grasa controlada.</p>
+          </div>
+        </div>
+        <span class="card-kcal">471 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">39 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:65%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">48 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:51%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">15 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:59%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>3 huevos camperos</li>
+            <li>60 g pan integral de centeno (2 rebanadas)</li>
+            <li>120 g queso fresco batido 0%</li>
+            <li>1 tomate mediano en rodajas</li>
+            <li>Sal, pimienta, aceite spray</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Bate los 3 huevos con sal y pimienta.</div>
+            <div class="step">Calienta una sartén antiadherente con spray de aceite y cuaja la tortilla a fuego medio.</div>
+            <div class="step">Tuesta las rebanadas de pan.</div>
+            <div class="step">Sirve la tortilla acompañada de las tostadas, el queso fresco batido y las rodajas de tomate.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Usa spray de aceite en lugar de aceite vertido — ahorras 60–90 kcal sin notar diferencia en sabor.</div>
+      </div>
+    </div>
+
+    <!-- D3 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">03</span>
+          <div>
+            <h3 class="card-title">Batido de whey con avena y plátano</h3>
+            <p class="card-tagline">Para los días sin tiempo. 2 minutos y tienes el desayuno más completo del plan.</p>
+          </div>
+        </div>
+        <span class="card-kcal">465 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">42 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:70%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">54 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:57%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">9 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:35%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>30 g whey proteína sabor vainilla o chocolate</li>
+            <li>60 g copos de avena</li>
+            <li>250 ml leche semidesnatada</li>
+            <li>½ plátano maduro</li>
+            <li>Hielo al gusto</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Mete todos los ingredientes en la batidora o vaso de smoothie.</div>
+            <div class="step">Tritura durante 30–45 segundos hasta que la avena quede integrada y la textura sea cremosa.</div>
+            <div class="step">Sirve con hielo y consume en los primeros 15 minutos para mejor textura.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Si usas avena molida previamente (avena en polvo), la textura queda más suave y sin grumos.</div>
+      </div>
+    </div>
+
+    <!-- D4 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">04</span>
+          <div>
+            <h3 class="card-title">Tostadas con requesón y huevo pochado</h3>
+            <p class="card-tagline">El desayuno que parece de restaurante. Proteína completa, textura perfecta.</p>
+          </div>
+        </div>
+        <span class="card-kcal">473 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">40 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:67%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">46 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:49%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">14 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:55%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>80 g pan integral (2–3 rebanadas)</li>
+            <li>180 g requesón desnatado</li>
+            <li>2 huevos camperos</li>
+            <li>150 g tomate cherry</li>
+            <li>Orégano, sal, vinagre blanco</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Hierve agua con un chorrito de vinagre blanco. Crea un remolino con una cuchara.</div>
+            <div class="step">Rompe cada huevo en un vaso pequeño y deslízalo en el agua hirviendo. Cocina 3 minutos.</div>
+            <div class="step">Tuesta el pan y úntalo generosamente con el requesón.</div>
+            <div class="step">Coloca los huevos pochados encima, añade los tomatitos cherry y espolvorea orégano.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El requesón tiene más proteína por caloría que la mayoría de quesos. Es tu aliado si controlas la grasa.</div>
+      </div>
+    </div>
+
+    <!-- D5 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">05</span>
+          <div>
+            <h3 class="card-title">Crepes proteicos de avena y claras</h3>
+            <p class="card-tagline">Alta proteína, sin harina procesada. Desayuno que parece trampa y no lo es.</p>
+          </div>
+        </div>
+        <span class="card-kcal">460 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">43 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:72%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">48 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:51%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">8 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:31%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>5 claras de huevo pasteurizadas</li>
+            <li>60 g avena molida (o copos finos)</li>
+            <li>200 g yogur griego 0%</li>
+            <li>80 g frutos rojos congelados</li>
+            <li>Canela, stevia, spray de aceite</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Mezcla las claras con la avena molida hasta formar una masa líquida y homogénea. Deja reposar 2 minutos.</div>
+            <div class="step">Calienta una sartén con spray de aceite a fuego medio-bajo. Vierte la mitad de la masa y cocina 2 min por cada lado.</div>
+            <div class="step">Repite con el resto de la masa para obtener 2 crepes.</div>
+            <div class="step">Sirve con el yogur griego encima y los frutos rojos descongelados con un poco de canela.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Las claras pasteurizadas líquidas (en brik) te ahorran tiempo y son más fáciles de usar. Encuéntralas en cualquier supermercado.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ COMIDAS ══════════════ -->
+<div id="panel-comida" class="panel">
+  <div class="section-head">
+    <h2>La <em>comida</em> principal</h2>
+    <div class="macro-summary">
+      <span class="ms-pill ms-k">660 kcal</span>
+      <span class="ms-pill ms-p">P: 50 g</span>
+      <span class="ms-pill ms-c">C: 65 g</span>
+      <span class="ms-pill ms-f">G: 18 g</span>
+    </div>
+  </div>
+  <div class="meal-grid">
+
+    <!-- C1 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">01</span>
+          <div>
+            <h3 class="card-title">Lentejas con arroz integral y huevo duro</h3>
+            <p class="card-tagline">El plato más completo de la dieta mediterránea. Proteína vegetal + animal = perfil de aminoácidos total.</p>
+          </div>
+        </div>
+        <span class="card-kcal">658 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">49 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:82%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">68 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:72%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">16 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:63%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>200 g lentejas pardinas cocidas (o bote escurrido)</li>
+            <li>150 g arroz integral cocido</li>
+            <li>2 huevos duros</li>
+            <li>½ cebolla, 1 zanahoria, 2 dientes de ajo</li>
+            <li>Pimentón ahumado, comino, 10 ml AOVE</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Sofríe cebolla y zanahoria en dados con el AOVE a fuego medio, 5 minutos.</div>
+            <div class="step">Añade el ajo picado, pimentón y comino. Rehoga 1 minuto más.</div>
+            <div class="step">Incorpora las lentejas escurridas, mezcla y calienta 3 minutos.</div>
+            <div class="step">Sirve sobre el arroz integral y corona con los huevos duros partidos por la mitad.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Las lentejas en bote (ya cocidas) te ahorran 30 minutos. Écurrelas y lávalas bien. Mismo valor nutricional, cero excusas.</div>
+      </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">02</span>
+          <div>
+            <h3 class="card-title">Pasta integral con tofu salteado y pesto</h3>
+            <p class="card-tagline">Proteína vegetal de alto valor biológico. El tofu bien cocinado no sabe a cartón, lo prometo.</p>
+          </div>
+        </div>
+        <span class="card-kcal">663 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">48 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:80%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">66 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:70%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">20 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:78%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>90 g pasta integral (peso seco)</li>
+            <li>150 g tofu firme extra</li>
+            <li>25 g pesto genovés de calidad</li>
+            <li>150 g tomates cherry</li>
+            <li>Sal, pimienta, albahaca fresca</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Cuece la pasta al dente según instrucciones. Reserva 50 ml del agua de cocción.</div>
+            <div class="step">Escurre y prensa el tofu con papel de cocina. Córtalo en dados y sáltalo en sartén caliente sin aceite, 4–5 minutos por lado hasta que dore.</div>
+            <div class="step">Mezcla la pasta con el pesto y un poco del agua de cocción para ligar la salsa.</div>
+            <div class="step">Incorpora el tofu y los cherry partidos. Sirve con albahaca fresca.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El secreto del tofu es prensarlo bien y saltearlo en sartén muy caliente y seca. Así queda crujiente por fuera y jugoso por dentro.</div>
+      </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">03</span>
+          <div>
+            <h3 class="card-title">Curry de garbanzos con arroz basmati</h3>
+            <p class="card-tagline">Antiinflamatorio, sabroso y con más fibra que el 95% de platos de un restaurante.</p>
+          </div>
+        </div>
+        <span class="card-kcal">655 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">28 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:47%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">70 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:74%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">18 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:71%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>220 g garbanzos cocidos escurridos</li>
+            <li>150 g arroz basmati cocido</li>
+            <li>200 ml leche de coco light</li>
+            <li>100 g espinacas baby, 1 tomate troceado</li>
+            <li>Curry, jengibre, ajo, cúrcuma, 8 ml AOVE</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Sofríe ajo y jengibre rallado en el AOVE 2 minutos. Añade curry y cúrcuma, rehoga 30 segundos.</div>
+            <div class="step">Incorpora el tomate troceado y cocina 3 minutos hasta que se deshaga.</div>
+            <div class="step">Agrega los garbanzos y la leche de coco. Cocina a fuego medio 8 minutos.</div>
+            <div class="step">Añade las espinacas en los últimos 2 minutos. Sirve sobre el arroz basmati.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Este plato es algo más bajo en proteína que el resto. Si quieres compensar, añade 1 huevo duro encima o 50 g más de garbanzos.</div>
+      </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">04</span>
+          <div>
+            <h3 class="card-title">Bowl de quinoa con tempeh y verduras asadas</h3>
+            <p class="card-tagline">El plato con mayor densidad nutricional del plan. Proteína vegetal completa al cuadrado.</p>
+          </div>
+        </div>
+        <span class="card-kcal">660 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">52 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:87%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">62 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:66%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">19 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:75%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>150 g quinoa cocida</li>
+            <li>150 g tempeh de soja</li>
+            <li>Calabacín, pimiento rojo, berenjena (300 g total)</li>
+            <li>10 ml AOVE, 15 ml salsa de soja baja en sal</li>
+            <li>Ajo en polvo, pimentón, limón</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Corta las verduras en dados y ásalas al horno a 200°C durante 20 minutos con AOVE y sal.</div>
+            <div class="step">Corta el tempeh en dados y marínalo 10 minutos en salsa de soja con ajo en polvo.</div>
+            <div class="step">Saltea el tempeh en sartén caliente 3–4 min por lado hasta que esté dorado.</div>
+            <div class="step">Monta el bowl: quinoa de base, verduras asadas y tempeh encima. Exprime el limón al final.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El tempeh es tofu fermentado y tiene más proteína y probióticos que el tofu normal. La salsa de soja lo transforma por completo.</div>
+      </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">05</span>
+          <div>
+            <h3 class="card-title">Tortilla de patata con ensalada y queso curado</h3>
+            <p class="card-tagline">El clásico español adaptado para rendimiento. Sin renunciar a nada que merezca la pena.</p>
+          </div>
+        </div>
+        <span class="card-kcal">662 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">32 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:53%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">55 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:58%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">30 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>3 huevos camperos</li>
+            <li>200 g patata cocida y enfriada</li>
+            <li>50 g queso manchego curado</li>
+            <li>Ensalada verde variada (100 g)</li>
+            <li>10 ml AOVE, sal, cebolleta opcional</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Cuece la patata en rodajas finas hasta que esté tierna. Enfría y escurre bien.</div>
+            <div class="step">Bate los 3 huevos, añade la patata, el queso rallado y sal. Mezcla con cuidado.</div>
+            <div class="step">Cuaja en sartén antiadherente con el AOVE a fuego lento, dando la vuelta con cuidado.</div>
+            <div class="step">Sirve con la ensalada verde aliñada con AOVE y vinagre.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Este plato tiene más grasa que el resto de comidas. Compénsalo reduciendo la grasa en la cena de ese mismo día.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ SNACKS ══════════════ -->
+<div id="panel-snack" class="panel">
+  <div class="section-head">
+    <h2>Snacks <em>inteligentes</em></h2>
+    <div class="macro-summary">
+      <span class="ms-pill ms-k">283 kcal</span>
+      <span class="ms-pill ms-p">P: 30 g</span>
+      <span class="ms-pill ms-c">C: 25 g</span>
+      <span class="ms-pill ms-f">G: 8 g</span>
+    </div>
+  </div>
+  <div class="meal-grid">
+
+    <!-- S1 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">01</span>
+          <div>
+            <h3 class="card-title">Yogur griego con nueces y arándanos</h3>
+            <p class="card-tagline">Proteína + antioxidantes + omega-3 vegetal. El snack más equilibrado del plan.</p>
+          </div>
+        </div>
+        <span class="card-kcal">280 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">26 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:43%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">22 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:23%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">11 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:43%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>250 g yogur griego 0% Hacendado</li>
+            <li>20 g nueces (aprox. 4 mitades)</li>
+            <li>80 g arándanos frescos o congelados</li>
+            <li>Canela al gusto, stevia opcional</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Vierte el yogur en un bol.</div>
+            <div class="step">Trocea las nueces y colócalas encima junto con los arándanos.</div>
+            <div class="step">Espolvorea canela. Listo en menos de 2 minutos.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Prepara 3–4 de estos en tarros de cristal el domingo. Tienes snack saludable para toda la semana sin pensar.</div>
+      </div>
+    </div>
+
+    <!-- S2 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">02</span>
+          <div>
+            <h3 class="card-title">Batido de whey con leche y cacao puro</h3>
+            <p class="card-tagline">El snack más rápido. 38g de proteína en un vaso. Sin excusas para no llegar al objetivo diario.</p>
+          </div>
+        </div>
+        <span class="card-kcal">285 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">38 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:63%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">22 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:23%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">6 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:24%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>30 g whey proteína sabor neutro o chocolate</li>
+            <li>300 ml leche semidesnatada</li>
+            <li>10 g cacao puro en polvo sin azúcar</li>
+            <li>Hielo abundante</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Mezcla en shaker o batidora el whey, la leche y el cacao.</div>
+            <div class="step">Agita fuerte durante 30 segundos.</div>
+            <div class="step">Sirve sobre hielo y consume en los siguientes 20 minutos.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El cacao puro (no el Cola-Cao) tiene flavonoides con evidencia real en salud cardiovascular. Además sabe brutal.</div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">03</span>
+          <div>
+            <h3 class="card-title">Tostada de requesón con semillas de chía</h3>
+            <p class="card-tagline">Snack sólido para quien necesita masticar. Omega-3, fibra y proteína en un mordisco.</p>
+          </div>
+        </div>
+        <span class="card-kcal">278 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">22 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:37%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">28 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:30%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">8 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:31%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>40 g pan integral de centeno</li>
+            <li>150 g requesón desnatado</li>
+            <li>10 g semillas de chía</li>
+            <li>Canela, stevia opcional</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Tuesta el pan ligeramente.</div>
+            <div class="step">Mezcla el requesón con canela y stevia al gusto.</div>
+            <div class="step">Unta el requesón sobre la tostada y espolvorea las semillas de chía encima.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Este snack es el más bajo en proteína. Úsalo los días en que ya llegaste alto a proteína en el desayuno y la comida.</div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">04</span>
+          <div>
+            <h3 class="card-title">Edamame con queso fresco batido</h3>
+            <p class="card-tagline">Proteína de soja + láctea. El snack más japonés-mediterráneo que vas a encontrar.</p>
+          </div>
+        </div>
+        <span class="card-kcal">282 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">31 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:52%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">21 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:22%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">9 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:35%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>150 g edamame congelado (soja tierna)</li>
+            <li>150 g queso fresco batido 0%</li>
+            <li>Sal marina en escamas</li>
+            <li>Pimentón dulce o cayena al gusto</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Cuece el edamame en agua hirviendo con sal, 4–5 minutos (o 3 minutos en microondas con tapa).</div>
+            <div class="step">Escurre y espolvorea sal marina en escamas.</div>
+            <div class="step">Sirve junto con el queso fresco batido con pimentón como dip.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El edamame es una de las pocas proteínas vegetales con perfil completo de aminoácidos esenciales. Lo encuentras congelado en Mercadona.</div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">05</span>
+          <div>
+            <h3 class="card-title">2 huevos duros con zanahoria y hummus</h3>
+            <p class="card-tagline">Snack sólido, saciante y con fibra real. El que mejor funciona para el hambre de media tarde.</p>
+          </div>
+        </div>
+        <span class="card-kcal">285 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">18 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:30%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">26 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:28%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">12 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:47%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>2 huevos camperos cocidos</li>
+            <li>150 g zanahoria en palitos</li>
+            <li>80 g hummus (comprado o casero)</li>
+            <li>Pimentón, perejil, limón</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Cuece los huevos 10 minutos en agua hirviendo. Enfría en agua con hielo y pela.</div>
+            <div class="step">Corta la zanahoria en bastones.</div>
+            <div class="step">Sirve los huevos partidos por la mitad con el hummus y los palitos de zanahoria. Espolvorea pimentón.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Prepara 5–6 huevos cocidos el domingo y guárdalos sin pelar en la nevera. Duran 7 días y tienes snack listo siempre.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ CENAS ══════════════ -->
+<div id="panel-cena" class="panel">
+  <div class="section-head">
+    <h2>Cenas <em>reparadoras</em></h2>
+    <div class="macro-summary">
+      <span class="ms-pill ms-k">473 kcal</span>
+      <span class="ms-pill ms-p">P: 48 g</span>
+      <span class="ms-pill ms-c">C: 49 g</span>
+      <span class="ms-pill ms-f">G: 12 g</span>
+    </div>
+  </div>
+  <div class="meal-grid">
+
+    <!-- Ce1 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">01</span>
+          <div>
+            <h3 class="card-title">Revuelto de claras con espinacas y champiñones</h3>
+            <p class="card-tagline">La cena más proteica del plan. Ligera, rápida y perfecta antes de dormir.</p>
+          </div>
+        </div>
+        <span class="card-kcal">468 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">47 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:78%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">44 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:47%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">11 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:43%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>6 claras de huevo pasteurizadas</li>
+            <li>1 huevo entero campero</li>
+            <li>150 g espinacas frescas</li>
+            <li>100 g champiñones laminados</li>
+            <li>60 g pan integral, 5 ml AOVE, ajo, sal</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Saltea el ajo laminado en el AOVE. Añade los champiñones y cocina 4 minutos a fuego fuerte.</div>
+            <div class="step">Incorpora las espinacas, remueve hasta que se reduzcan (2 min).</div>
+            <div class="step">Bate las claras con el huevo entero y viértelas sobre las verduras. Remueve a fuego bajo hasta cuajar suave.</div>
+            <div class="step">Sirve con el pan integral tostado.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Cuaja el revuelto a fuego muy bajo y retíralo antes de que esté completamente hecho. El calor residual lo termina solo y queda cremoso.</div>
+      </div>
+    </div>
+
+    <!-- Ce2 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">02</span>
+          <div>
+            <h3 class="card-title">Tofu a la plancha con boniato y brócoli</h3>
+            <p class="card-tagline">Cena antiinflamatoria y completa. El boniato da el glucógeno que necesitas para recuperar.</p>
+          </div>
+        </div>
+        <span class="card-kcal">474 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">34 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:57%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">48 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:51%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">14 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:55%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>200 g tofu firme extra (escurrido y prensado)</li>
+            <li>200 g boniato (peso crudo)</li>
+            <li>200 g brócoli</li>
+            <li>15 ml salsa de soja, 8 ml AOVE, sésamo</li>
+            <li>Ajo en polvo, pimienta</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Asa el boniato en dados (200°C, 20 min) con AOVE y sal.</div>
+            <div class="step">Cuece el brócoli al vapor 6 minutos hasta que esté tierno pero con mordida.</div>
+            <div class="step">Corta el tofu en filetes y márcalos en sartén muy caliente 4 min por lado con salsa de soja.</div>
+            <div class="step">Sirve todo junto y espolvorea sésamo tostado por encima.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> El brócoli al vapor conserva el 90% de sus glucosinolatos (compuestos anticancerígenos). Hervido en agua pierde hasta el 60%. Pequeño cambio, gran diferencia.</div>
+      </div>
+    </div>
+
+    <!-- Ce3 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">03</span>
+          <div>
+            <h3 class="card-title">Ensalada templada de lentejas y queso de cabra</h3>
+            <p class="card-tagline">Cena fresca, con textura y sabor. Fibra, proteína y grasas de calidad en un plato.</p>
+          </div>
+        </div>
+        <span class="card-kcal">471 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">30 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:50%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">47 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:50%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">17 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:67%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>200 g lentejas cocidas (templadas)</li>
+            <li>60 g queso de cabra rulo</li>
+            <li>80 g rúcula fresca</li>
+            <li>1 tomate, 1 zanahoria rallada</li>
+            <li>10 ml AOVE, vinagre balsámico, mostaza</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Calienta las lentejas en sartén con un poco de AOVE y sal. No deben estar frías.</div>
+            <div class="step">Prepara la vinagreta mezclando AOVE, vinagre balsámico y una pizca de mostaza.</div>
+            <div class="step">Monta la ensalada: rúcula de base, tomate en dados, zanahoria rallada y lentejas templadas.</div>
+            <div class="step">Desmorona el queso de cabra por encima y aliña con la vinagreta.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Añade 2 huevos duros a esta ensalada si ese día la proteína total está por debajo de 150g. El queso de cabra tiene más proteína que el feta y menos sodio.</div>
+      </div>
+    </div>
+
+    <!-- Ce4 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">04</span>
+          <div>
+            <h3 class="card-title">Crema de calabaza con queso fresco y pan integral</h3>
+            <p class="card-tagline">La cena perfecta para el frío. Saciante, reconfortante y muy baja en grasa.</p>
+          </div>
+        </div>
+        <span class="card-kcal">469 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">31 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:52%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">53 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:56%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">12 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:47%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>400 g calabaza (peso limpio)</li>
+            <li>200 g queso fresco batido 0% (para servir)</li>
+            <li>60 g pan integral</li>
+            <li>½ cebolla, 1 zanahoria, caldo de verduras</li>
+            <li>Nuez moscada, 8 ml AOVE, pimienta</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Sofríe cebolla y zanahoria troceadas en AOVE 5 minutos. Añade la calabaza en dados.</div>
+            <div class="step">Cubre con caldo de verduras y cocina 15 minutos hasta que la calabaza esté tierna.</div>
+            <div class="step">Tritura con batidora hasta textura suave. Añade nuez moscada y pimienta.</div>
+            <div class="step">Sirve la crema con el queso fresco batido por encima a modo de nata y el pan tostado al lado.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Prepara el doble de crema y congela en porciones. Tienes cenas para 2 semanas con 20 minutos de trabajo.</div>
+      </div>
+    </div>
+
+    <!-- Ce5 -->
+    <div class="card">
+      <div class="card-top">
+        <div style="display:flex;align-items:flex-start;gap:8px;">
+          <span class="card-num">05</span>
+          <div>
+            <h3 class="card-title">Tortilla de claras con guacamole y tostadas</h3>
+            <p class="card-tagline">Alta proteína + grasa de aguacate de calidad. Cena que parece indulgente y no lo es.</p>
+          </div>
+        </div>
+        <span class="card-kcal">475 kcal</span>
+      </div>
+      <div class="card-body">
+        <div class="card-macros">
+          <div>
+            <div class="macro-label-row"><span>Proteína</span><span class="macro-val">46 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-p" style="width:77%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Carbohidratos</span><span class="macro-val">36 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-c" style="width:38%"></div></div>
+          </div>
+          <div>
+            <div class="macro-label-row"><span>Grasa</span><span class="macro-val">20 g</span></div>
+            <div class="bar-bg"><div class="bar-fill bar-f" style="width:78%"></div></div>
+          </div>
+        </div>
+        <div class="card-ingredients">
+          <p class="ing-title">Ingredientes</p>
+          <ul class="ing-list">
+            <li>6 claras de huevo + 2 huevos enteros</li>
+            <li>½ aguacate maduro (75 g)</li>
+            <li>½ tomate, ½ lima, cilantro fresco</li>
+            <li>60 g pan integral</li>
+            <li>Sal, pimienta, spray aceite</li>
+          </ul>
+        </div>
+        <div class="card-prep">
+          <p class="prep-title">Preparación</p>
+          <div class="steps">
+            <div class="step">Prepara el guacamole: aplasta el aguacate con un tenedor, añade tomate picado fino, zumo de lima, cilantro y sal.</div>
+            <div class="step">Bate las claras con los huevos enteros, sal y pimienta.</div>
+            <div class="step">Cuaja la tortilla en sartén con spray de aceite a fuego medio-bajo, dando la vuelta con cuidado.</div>
+            <div class="step">Sirve con el guacamole y las tostadas integrales al lado.</div>
+          </div>
+        </div>
+        <div class="tip"><strong>Consejo Nutrymuth:</strong> Esta cena tiene más grasa que el resto. Compénsalo eligiendo un snack más bajo en grasa ese día, como el batido de whey con leche.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<footer>
+  Plan diseñado por <strong>Nutrymuth</strong> · Basado en evidencia científica · Mayo 2026<br>
+  <span style="margin-top:4px;display:block;">No sustituye la consulta con un profesional de la salud · 1.886 kcal/día · Plan ovo-lácteo vegetariano</span>
+</footer>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

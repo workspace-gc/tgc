@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutricion por Entrenamiento S02-S06 - Mario Monzon</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0F0F0D;
+  --surface:   #1A1A16;
+  --surface2:  #222220;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(255,255,255,0.14);
+  --text:      #F0EFEA;
+  --text2:     #9A9A90;
+  --text3:     #5A5A52;
+  --green:     #7EC87A;
+  --green-d:   #2D5C2A;
+  --green-bg:  rgba(126,200,122,0.08);
+  --orange:    #E8924A;
+  --orange-d:  #6B3A18;
+  --orange-bg: rgba(232,146,74,0.08);
+  --blue:      #6AADDF;
+  --blue-bg:   rgba(106,173,223,0.08);
+  --red:       #E06060;
+  --red-bg:    rgba(224,96,96,0.08);
+  --amber:     #D4A03A;
+  --amber-bg:  rgba(212,160,58,0.08);
+  --purple:    #A78BDA;
+  --purple-bg: rgba(167,139,218,0.08);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.6;
+}
+
+/* HEADER */
+.hero {
+  padding:3.5rem 2rem 3rem;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  top:-120px;right:-120px;
+  width:500px;height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(126,200,122,0.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{max-width:960px;margin:0 auto;position:relative;}
+.hero-tag {
+  font-family:'Syne',sans-serif;
+  font-size:11px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green);margin-bottom:1rem;
+}
+.hero h1 {
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem,4vw,3rem);
+  font-weight:800;
+  line-height:1.1;
+  margin-bottom:.75rem;
+  color:var(--text);
+}
+.hero h1 span{color:var(--green);}
+.hero-sub {
+  font-size:14px;color:var(--text2);
+  max-width:520px;line-height:1.65;
+  margin-bottom:2.5rem;
+}
+
+/* STATS ROW */
+.stats-row {
+  display:flex;flex-wrap:wrap;gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+}
+.stat {
+  flex:1;min-width:100px;
+  background:var(--surface);
+  padding:1rem 1.25rem;
+  text-align:center;
+}
+.stat-n {
+  font-family:'Syne',sans-serif;
+  font-size:1.5rem;font-weight:700;
+  color:var(--text);line-height:1;
+}
+.stat-l{font-size:11px;color:var(--text3);margin-top:4px;letter-spacing:.04em;}
+
+/* NAV */
+.week-nav {
+  max-width:960px;margin:0 auto;
+  padding:1.5rem 2rem .5rem;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.wbtn {
+  padding:8px 18px;border-radius:999px;
+  border:1px solid var(--border2);
+  background:transparent;
+  font-family:'Inter',sans-serif;
+  font-size:12px;font-weight:500;
+  color:var(--text2);cursor:pointer;
+  transition:all .2s;
+}
+.wbtn:hover{border-color:var(--green);color:var(--green);}
+.wbtn.active{background:var(--green);border-color:var(--green);color:#0F0F0D;font-weight:600;}
+.wbtn.deload{border-color:var(--amber);color:var(--amber);}
+.wbtn.deload.active{background:var(--amber);color:#0F0F0D;}
+
+/* LEGEND */
+.legend {
+  max-width:960px;margin:0 auto;
+  padding:.75rem 2rem 0;
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+.leg-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text3);
+}
+.leg-dot{width:8px;height:8px;border-radius:50%;}
+
+/* MAIN */
+main{max-width:960px;margin:0 auto;padding:1.5rem 2rem 5rem;}
+.panel{display:none;}.panel.active{display:block;animation:fade .3s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* WEEK HEADER */
+.week-head {
+  display:flex;justify-content:space-between;align-items:flex-start;
+  flex-wrap:wrap;gap:1rem;
+  margin-bottom:1.75rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border);
+}
+.week-title {
+  font-family:'Syne',sans-serif;
+  font-size:1.5rem;font-weight:700;color:var(--text);
+}
+.week-sub{font-size:13px;color:var(--text2);margin-top:4px;}
+.week-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.badge {
+  font-size:11px;font-weight:600;letter-spacing:.04em;
+  padding:4px 12px;border-radius:999px;
+}
+.bg-green{background:var(--green-bg);color:var(--green);border:1px solid rgba(126,200,122,.2);}
+.bg-orange{background:var(--orange-bg);color:var(--orange);border:1px solid rgba(232,146,74,.2);}
+.bg-amber{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(212,160,58,.2);}
+.bg-blue{background:var(--blue-bg);color:var(--blue);border:1px solid rgba(106,173,223,.2);}
+.bg-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(224,96,96,.2);}
+.bg-purple{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(167,139,218,.2);}
+
+/* DAY CARD */
+.days-grid{display:flex;flex-direction:column;gap:12px;}
+.day-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+}
+.day-card.highlight{border-color:rgba(126,200,122,.25);}
+.day-card.long-run{border-color:rgba(232,146,74,.25);}
+.day-card.deload-day{border-color:rgba(212,160,58,.2);}
+
+.day-header {
+  display:grid;
+  grid-template-columns:56px 1fr auto;
+  align-items:center;
+  gap:1rem;
+  padding:1rem 1.25rem;
+  border-bottom:1px solid var(--border);
+}
+.day-label {
+  font-family:'Syne',sans-serif;
+  font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);
+}
+.day-session {
+  font-family:'Syne',sans-serif;
+  font-size:15px;font-weight:700;
+  color:var(--text);
+}
+.day-session-detail{font-size:12px;color:var(--text2);margin-top:2px;}
+.day-kcal {
+  font-family:'Syne',sans-serif;
+  font-size:1.1rem;font-weight:700;
+  color:var(--green);
+  text-align:right;
+  white-space:nowrap;
+}
+.day-kcal-label{font-size:10px;color:var(--text3);text-align:right;margin-top:2px;}
+
+.day-body {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+}
+@media(max-width:580px){.day-body{grid-template-columns:1fr;}}
+
+/* MACROS MINI */
+.day-macros {
+  padding:1rem 1.25rem;
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+@media(max-width:580px){.day-macros{border-right:none;border-bottom:1px solid var(--border);}}
+.mr {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+}
+.mr-label{color:var(--text2);min-width:80px;}
+.mr-bar{flex:1;height:5px;background:var(--surface2);border-radius:99px;overflow:hidden;}
+.mr-fill{height:100%;border-radius:99px;}
+.fp{background:#6AADDF;}
+.fc{background:#7EC87A;}
+.ff{background:#D4A03A;}
+.mr-val{color:var(--text);font-weight:500;min-width:36px;text-align:right;}
+
+/* TIMING */
+.day-timing {
+  padding:1rem 1.25rem;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.timing-block{display:flex;gap:10px;align-items:flex-start;}
+.timing-dot {
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  flex-shrink:0;margin-top:1px;
+}
+.td-pre{background:var(--blue-bg);color:var(--blue);}
+.td-dur{background:var(--orange-bg);color:var(--orange);}
+.td-post{background:var(--green-bg);color:var(--green);}
+.td-rest{background:var(--surface2);color:var(--text3);}
+.timing-content {}
+.timing-title{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.04em;}
+.timing-detail{font-size:12px;color:var(--text);line-height:1.45;margin-top:2px;}
+
+/* MEALS SECTION */
+.day-meals {
+  grid-column:1/-1;
+  border-top:1px solid var(--border);
+  padding:1rem 1.25rem;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+@media(max-width:600px){.day-meals{grid-template-columns:repeat(2,1fr);}}
+.meal-mini {
+  background:var(--surface2);
+  border-radius:8px;
+  padding:.65rem .9rem;
+}
+.mm-label{font-size:10px;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px;}
+.mm-name{font-size:12px;color:var(--text);line-height:1.4;font-weight:500;}
+.mm-kcal{font-size:11px;color:var(--text2);margin-top:3px;}
+
+/* ALERT */
+.alert {
+  grid-column:1/-1;
+  margin:0 1.25rem 1.25rem;
+  border-left:3px solid var(--orange);
+  border-radius:0 8px 8px 0;
+  background:var(--orange-bg);
+  padding:.65rem 1rem;
+  font-size:12px;color:var(--orange);
+  line-height:1.5;
+}
+.alert.info{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+.alert.success{border-color:var(--green);background:var(--green-bg);color:var(--green);}
+
+/* REST DAY */
+.day-card.rest .day-kcal{color:var(--text3);}
+.day-card.rest .day-kcal-label{color:var(--text3);}
+
+/* WEEKLY SUMMARY */
+.week-summary {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.25rem;
+  margin-top:1.5rem;
+}
+.ws-title {
+  font-family:'Syne',sans-serif;
+  font-size:13px;font-weight:700;
+  color:var(--text2);
+  letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
+.ws-item{background:var(--surface2);border-radius:8px;padding:.75rem 1rem;}
+.ws-n {
+  font-family:'Syne',sans-serif;
+  font-size:1.35rem;font-weight:700;color:var(--text);
+}
+.ws-l{font-size:11px;color:var(--text3);margin-top:3px;}
+
+/* GEL PROTOCOL */
+.gel-box {
+  grid-column:1/-1;
+  border-top:1px solid var(--border);
+  padding:1rem 1.25rem;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.gel-icon {
+  width:36px;height:36px;border-radius:8px;
+  background:var(--orange-bg);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.gel-content{}
+.gel-title{font-size:12px;font-weight:600;color:var(--orange);margin-bottom:4px;}
+.gel-detail{font-size:12px;color:var(--text2);line-height:1.5;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-tag">Nutricion periodizada &middot; Mario Monzon &middot; TGC Advanced 2027</p>
+    <h1>Comer segun <span>como entrenas.</span><br>Semanas 02 a 06.</h1>
+    <p class="hero-sub">Cada dia tiene una carga distinta. Tu nutricion tambien. Plan adaptado sesion por sesion para maximizar recuperacion, rendimiento y perdida de grasa.</p>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n" style="color:var(--text3)">1.886</div><div class="stat-l">kcal descanso</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--blue)">2.250</div><div class="stat-l">kcal rodaje suave</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--purple)">2.100</div><div class="stat-l">kcal fuerza</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--orange)">2.650</div><div class="stat-l">kcal largo</div></div>
+      <div class="stat"><div class="stat-n" style="color:var(--amber)">1.980</div><div class="stat-l">kcal descarga</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="week-nav">
+  <button class="wbtn active" onclick="showW('w02',this)">S02 &middot; 25 may</button>
+  <button class="wbtn" onclick="showW('w03',this)">S03 &middot; 1 jun</button>
+  <button class="wbtn" onclick="showW('w04',this)">S04 &middot; 8 jun</button>
+  <button class="wbtn" onclick="showW('w05',this)">S05 &middot; 15 jun</button>
+  <button class="wbtn deload" onclick="showW('w06',this)">S06 DESCARGA &middot; 22 jun</button>
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div><span>Pre-entreno</span></div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div><span>Durante</span></div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div><span>Post-entreno</span></div>
+  <div class="leg-item"><div class="leg-dot" style="background:var(--text3)"></div><span>Descanso</span></div>
+</div>
+
+<main>
+
+<!-- ========== SEMANA 02 ========== -->
+<div id="w02" class="panel active">
+  <div class="week-head">
+    <div>
+      <div class="week-title">Semana 02 &middot; 25&ndash;31 Mayo</div>
+      <div class="week-sub">Primera semana con fuerza &middot; Largo 10 km &middot; Sin pliometria</div>
+    </div>
+    <div class="week-badges">
+      <span class="badge bg-green">23 km rodaje</span>
+      <span class="badge bg-purple">2 x Fuerza</span>
+      <span class="badge bg-red">Sin pliometria</span>
+    </div>
+  </div>
+
+  <div class="days-grid">
+
+    <!-- LUN -->
+    <div class="day-card rest">
+      <div class="day-header">
+        <div class="day-label">LUN<br>25 may</div>
+        <div><div class="day-session">Descanso total</div><div class="day-session-detail">Recuperacion completa</div></div>
+        <div><div class="day-kcal">1.886</div><div class="day-kcal-label">kcal</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:50%"></div></div><span class="mr-val">189 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:40%"></div></div><span class="mr-val">51 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Dia de recuperacion</div><div class="timing-detail">Plan base estandar. 3 comidas + 1 snack. Sin ajustes especiales.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl yogur griego y avena</div><div class="mm-kcal">468 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas con arroz y huevo</div><div class="mm-kcal">658 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Yogur griego con nueces</div><div class="mm-kcal">280 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto de claras y espinacas</div><div class="mm-kcal">468 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAR -->
+    <div class="day-card highlight">
+      <div class="day-header">
+        <div class="day-label">MAR<br>26 may</div>
+        <div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">6 km &middot; Z2 &middot; FC&lt;145 &middot; Paradigm 8</div></div>
+        <div><div class="day-kcal">2.276</div><div class="day-kcal-label">kcal (+390)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:68%"></div></div><span class="mr-val">255 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:38%"></div></div><span class="mr-val">52 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">30 min antes de salir</div><div class="timing-detail">1 platano maduro (90 kcal, 22 g carbos). Si el rodaje es por la manana, anade 1 rebanada de pan con miel.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Ventana 30 min post-rodaje</div><div class="timing-detail">Batido de whey + leche + platano (45 g proteina, 35 g carbos). Activa la sintesis muscular antes de duchar.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano maduro</div><div class="mm-kcal">90 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche</div><div class="mm-kcal">285 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh</div><div class="mm-kcal">660 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tofu plancha + boniato</div><div class="mm-kcal">474 kcal</div></div>
+        </div>
+        <div class="alert info">El post-rodaje cuenta como snack. Ajusta la comida eliminando el pan si ya llegaste a los carbos.</div>
+      </div>
+    </div>
+
+    <!-- MIE -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">MIE<br>27 may</div>
+        <div><div class="day-session" style="color:var(--purple)">Fuerza A</div><div class="day-session-detail">Tren inferior excentrico + Core &middot; 45-60 min</div></div>
+        <div><div class="day-kcal">2.106</div><div class="day-kcal-label">kcal (+220)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:56%"></div></div><span class="mr-val">210 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60-90 min antes del gimnasio</div><div class="timing-detail">Comida normal con proteina alta (50 g) y carbos moderados (65 g). No entrenes en ayunas el dia de fuerza.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Ventana 45 min post-fuerza</div><div class="timing-detail">Requesón 200 g + 40 g avena + miel. O tortilla 3 claras + 1 huevo con tostada integral. La leucina activa el MPS.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tortilla 3 huevos + tostadas</div><div class="mm-kcal">471 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">Requesón + avena + miel</div><div class="mm-kcal">280 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso + pan</div><div class="mm-kcal">469 kcal</div></div>
+        </div>
+        <div class="alert">S02: Primera semana de fuerza. Los cuadriceps estaran cargados el jueves. Es normal &mdash; son agujetas, no lesion.</div>
+      </div>
+    </div>
+
+    <!-- JUE -->
+    <div class="day-card highlight">
+      <div class="day-header">
+        <div class="day-label">JUE<br>28 may</div>
+        <div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">7 km &middot; Z2 &middot; FC&lt;147 &middot; Paradigm 8</div></div>
+        <div><div class="day-kcal">2.341</div><div class="day-kcal-label">kcal (+455)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:72%"></div></div><span class="mr-val">268 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:35%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">30 min antes &mdash; con agujetas</div><div class="timing-detail">Si las piernas van cargadas por la Fuerza A del miercoles, reduce a 5 km. Pre-rodaje igual: platano o 2 datiles.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Post-rodaje: hidratacion + carbos</div><div class="timing-detail">Batido de whey + leche semidesnatada. Si las piernas van bien, mantén 7 km. Prioriza la recuperacion sobre el kilometraje.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano o 2 datiles</div><div class="mm-kcal">90 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche cacao</div><div class="mm-kcal">285 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz</div><div class="mm-kcal">655 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tortilla claras + guacamole</div><div class="mm-kcal">475 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIE -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">VIE<br>29 may</div>
+        <div><div class="day-session" style="color:var(--purple)">Fuerza B</div><div class="day-session-detail">Estabilidad cadera + Movilidad &middot; 45-60 min</div></div>
+        <div><div class="day-kcal">2.086</div><div class="day-kcal-label">kcal (+200)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:55%"></div></div><span class="mr-val">205 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Misma estrategia que el miercoles</div><div class="timing-detail">Comida 60-90 min antes. Proteina alta + carbos moderados. Hip thrust y movilidad de tobillo son la clave de hoy.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Post-fuerza ligero</div><div class="timing-detail">Snack proteico + fruta. Manana es movilidad y el domingo el largo &mdash; hay que llegar fresco al domingo.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Batido whey + avena + platano</div><div class="mm-kcal">465 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Tortilla patata + ensalada</div><div class="mm-kcal">662 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">Edamame + queso fresco batido</div><div class="mm-kcal">282 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Lentejas + queso cabra templada</div><div class="mm-kcal">471 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAB -->
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">SAB<br>30 may</div>
+        <div><div class="day-session" style="color:var(--text2)">Movilidad</div><div class="day-session-detail">Foam roller + estiramientos &middot; Casa &middot; 20 min &middot; Pre-carga para el largo</div></div>
+        <div><div class="day-kcal">2.050</div><div class="day-kcal-label">kcal (carbos altos)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:55%"></div></div><span class="mr-val">140 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:78%"></div></div><span class="mr-val">290 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:28%"></div></div><span class="mr-val">40 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">Dia de pre-carga de glucogeno</div><div class="timing-detail">Aumenta los carbos en la cena: pasta, arroz o boniato. Baja la grasa. Esto llena el glucogeno hepatico y muscular para el largo del domingo.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Crepes avena + claras + frutos rojos</div><div class="mm-kcal">460 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz basmati</div><div class="mm-kcal">655 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Tostada requesón + chia</div><div class="mm-kcal">278 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena &mdash; pre-carga</div><div class="mm-name">Pasta + tofu + pesto (ración extra carbos)</div><div class="mm-kcal">663 kcal</div></div>
+        </div>
+        <div class="alert success">La cena del sabado es la mas importante de la semana. Carbos altos, grasa baja, proteina moderada. No te la saltes ni la cambies por algo bajo en carbos.</div>
+      </div>
+    </div>
+
+    <!-- DOM -->
+    <div class="day-card long-run">
+      <div class="day-header">
+        <div class="day-label">DOM<br>31 may</div>
+        <div><div class="day-session" style="color:var(--orange)">Largo suave &mdash; 10 km</div><div class="day-session-detail">7:00-7:15 /km &middot; FC&lt;148 &middot; Paradigm 8 &middot; S02: sin gel</div></div>
+        <div><div class="day-kcal">2.537</div><div class="day-kcal-label">kcal (+651)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:85%"></div></div><span class="mr-val">315 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:32%"></div></div><span class="mr-val">45 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60-90 min antes &mdash; desayuno solido</div><div class="timing-detail">Tostadas con requesón + huevo pochado (473 kcal, 40 g P, 46 g C). Deja 60 min minimo antes de salir.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-dur">DUR</div><div class="timing-content"><div class="timing-title">Durante (S02: solo agua)</div><div class="timing-detail">10 km en Z2 no requiere gel todavia. Lleva agua. En S04 y S05 introduces el gel en la carrera larga.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Ventana 30 min post-largo &mdash; critica</div><div class="timing-detail">Batido whey + 60 g avena + platano + leche (55 g P, 80 g C). Esto es la recuperacion mas importante de la semana.</div></div></div>
+        </div>
+        <div class="gel-box">
+          <div class="gel-icon">&#127810;</div>
+          <div class="gel-content">
+            <div class="gel-title">S02: Sin gel &mdash; Solo agua</div>
+            <div class="gel-detail">10 km en Z2 con el glucogeno bien cargado desde el sabado no requiere gel. Practica beber agua cada 20-25 min aunque no tengas sed. El habito de hidratacion se entrena.</div>
+          </div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-largo (desayuno)</div><div class="mm-name">Tostadas + requesón + huevo pochado</div><div class="mm-kcal">473 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-largo (snack)</div><div class="mm-name">Batido recovery: whey+avena+platano</div><div class="mm-kcal">450 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + champiñones + tostada</div><div class="mm-kcal">468 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="week-summary">
+    <div class="ws-title">Resumen S02</div>
+    <div class="ws-grid">
+      <div class="ws-item"><div class="ws-n">23 km</div><div class="ws-l">Total rodaje</div></div>
+      <div class="ws-item"><div class="ws-n">10 km</div><div class="ws-l">Largo dominical</div></div>
+      <div class="ws-item"><div class="ws-n">2.147</div><div class="ws-l">kcal media/dia</div></div>
+      <div class="ws-item"><div class="ws-n">1.493</div><div class="ws-l">kcal quemadas running</div></div>
+      <div class="ws-item"><div class="ws-n">0</div><div class="ws-l">Geles (se empieza en S04)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SEMANA 03 ========== -->
+<div id="w03" class="panel">
+  <div class="week-head">
+    <div>
+      <div class="week-title">Semana 03 &middot; 1&ndash;7 Junio</div>
+      <div class="week-sub">Calor de junio &middot; Rodajes antes 8h o despues 19h &middot; Largo 12 km</div>
+    </div>
+    <div class="week-badges">
+      <span class="badge bg-green">27 km rodaje</span>
+      <span class="badge bg-purple">2 x Fuerza</span>
+      <span class="badge bg-red">Sin pliometria</span>
+      <span class="badge bg-orange">Calor: hidratacion ++</span>
+    </div>
+  </div>
+  <div class="days-grid">
+
+    <!-- LUN -->
+    <div class="day-card rest">
+      <div class="day-header">
+        <div class="day-label">LUN<br>1 jun</div>
+        <div><div class="day-session">Descanso total</div><div class="day-session-detail">Recuperacion completa</div></div>
+        <div><div class="day-kcal">1.886</div><div class="day-kcal-label">kcal</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:50%"></div></div><span class="mr-val">189 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:40%"></div></div><span class="mr-val">51 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Recuperacion post-largo del domingo</div><div class="timing-detail">Hoy el cuerpo consolida el trabajo de la semana. Plan base. Sin ajustes. Come bien, duerme bien.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl yogur griego y avena</div><div class="mm-kcal">468 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Batido whey + leche + cacao</div><div class="mm-kcal">285 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tofu plancha + boniato + brocoli</div><div class="mm-kcal">474 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAR a VIE: igual que S02 con km +1 -->
+    <div class="day-card highlight">
+      <div class="day-header">
+        <div class="day-label">MAR<br>2 jun</div>
+        <div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">7 km &middot; Z2 &middot; FC&lt;147 &middot; Antes 8h o despues 19h</div></div>
+        <div><div class="day-kcal">2.341</div><div class="day-kcal-label">kcal (+455)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:72%"></div></div><span class="mr-val">268 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:35%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Hidratacion: empieza la noche anterior</div><div class="timing-detail">Con el calor de junio, bebe 500 ml de agua extra el lunes por la noche. Pre-rodaje: platano + agua 250 ml.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Post-rodaje: rehidratacion + recovery</div><div class="timing-detail">Batido whey + leche + sal (1 pizca). El sodio ayuda a retener liquidos tras el sudor del calor.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano maduro</div><div class="mm-kcal">90 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche</div><div class="mm-kcal">285 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas + arroz + huevo</div><div class="mm-kcal">658 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + espinacas</div><div class="mm-kcal">468 kcal</div></div>
+        </div>
+        <div class="alert info">Calor de junio: si el ritmo sube mas de 15 ppm por encima del objetivo, para. La Z2 no se negocia en calor.</div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">MIE<br>3 jun</div>
+        <div><div class="day-session" style="color:var(--purple)">Fuerza A</div><div class="day-session-detail">Tren inferior excentrico + Core &middot; Tobillo: movilidad en pared (drop 0mm)</div></div>
+        <div><div class="day-kcal">2.106</div><div class="day-kcal-label">kcal (+220)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:56%"></div></div><span class="mr-val">210 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60 min antes: comida con proteina alta</div><div class="timing-detail">Objetivo de la semana: las agujetas ya son menores. El cuerpo se adapta. Mantén los pesos de S02.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Ventana 45 min post-fuerza</div><div class="timing-detail">Requesón 200 g + 40 g avena + platano. Prioridad: leucina para el MPS. Al menos 3 g de leucina por toma.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tostadas + requesón + huevo pochado</div><div class="mm-kcal">473 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Bowl quinoa + tempeh</div><div class="mm-kcal">660 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">Yogur griego + nueces + arandanos</div><div class="mm-kcal">280 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso + pan</div><div class="mm-kcal">469 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card highlight">
+      <div class="day-header">
+        <div class="day-label">JUE<br>4 jun</div>
+        <div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">8 km &middot; Z2 &middot; FC&lt;147 &middot; Antes 8h o despues 19h</div></div>
+        <div><div class="day-kcal">2.406</div><div class="day-kcal-label">kcal (+520)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:76%"></div></div><span class="mr-val">282 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:33%"></div></div><span class="mr-val">48 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">30 min antes + agua extra</div><div class="timing-detail">Platano + 500 ml agua con pizca de sal. El calor aumenta el sodio perdido. Compensalo desde antes de salir.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery inmediato</div><div class="timing-detail">Batido whey + leche + platano. 8 km queman ~520 kcal en tu caso. Repón la mitad en la ventana de 30 min.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano + agua con sal</div><div class="mm-kcal">90 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche + platano</div><div class="mm-kcal">350 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz</div><div class="mm-kcal">655 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tortilla claras + guacamole</div><div class="mm-kcal">475 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">VIE<br>5 jun</div>
+        <div><div class="day-session" style="color:var(--purple)">Fuerza B</div><div class="day-session-detail">Estabilidad cadera + Movilidad de tobillo (clave con Paradigm 8)</div></div>
+        <div><div class="day-kcal">2.086</div><div class="day-kcal-label">kcal (+200)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:55%"></div></div><span class="mr-val">205 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Comida 60-90 min antes</div><div class="timing-detail">Fuerza B: hip thrust, movilidad tobillo, monster walk. Menos intensa que A pero igual de importante para la rodilla.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Snack proteico ligero</div><div class="timing-detail">El cuerpo ya ha acumulado carga esta semana. Prioriza la recuperacion sobre la ingesta. Manana es pre-carga.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Crepes avena + claras</div><div class="mm-kcal">460 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Lentejas + arroz + huevo</div><div class="mm-kcal">658 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">2 huevos duros + zanahoria + hummus</div><div class="mm-kcal">285 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Ensalada lentejas + queso cabra</div><div class="mm-kcal">471 kcal</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <div class="day-label">SAB<br>6 jun</div>
+        <div><div class="day-session" style="color:var(--text2)">Movilidad &mdash; Pre-carga glucogeno</div><div class="day-session-detail">Foam roller + estiramientos &middot; Casa &middot; Cena alta en carbos</div></div>
+        <div><div class="day-kcal">2.050</div><div class="day-kcal-label">kcal (carbos ++)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:55%"></div></div><span class="mr-val">140 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:78%"></div></div><span class="mr-val">290 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:28%"></div></div><span class="mr-val">40 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">Pre-carga para 12 km</div><div class="timing-detail">El largo del domingo sube a 12 km. Necesitas mas glucogeno que en S02. Cena: pasta o arroz con proteina magra. Sin grasas altas en la cena.</div></div></div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl proteico avena + yogur</div><div class="mm-kcal">468 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Edamame + queso fresco batido</div><div class="mm-kcal">282 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Cena PRE-CARGA</div><div class="mm-name">Pasta + tofu + pesto (doble carbos)</div><div class="mm-kcal">663 kcal</div></div>
+        </div>
+        <div class="alert success">12 km manana. Cena estrategica: pasta o arroz, proteina magra, grasa minima. Este es el deposito de gasolina para el largo.</div>
+      </div>
+    </div>
+
+    <div class="day-card long-run">
+      <div class="day-header">
+        <div class="day-label">DOM<br>7 jun</div>
+        <div><div class="day-session" style="color:var(--orange)">Largo suave &mdash; 12 km</div><div class="day-session-detail">7:00-7:15 /km &middot; FC&lt;148 &middot; Agua + 1 gel (opcional km 9)</div></div>
+        <div><div class="day-kcal">2.668</div><div class="day-kcal-label">kcal (+782)</div></div>
+      </div>
+      <div class="day-body">
+        <div class="day-macros">
+          <div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div>
+          <div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:88%"></div></div><span class="mr-val">328 g</span></div>
+          <div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:30%"></div></div><span class="mr-val">43 g</span></div>
+        </div>
+        <div class="day-timing">
+          <div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60-90 min antes: desayuno cargado</div><div class="timing-detail">Batido whey + 70 g avena + platano + leche. Solido y absorbible. Deja 60 min antes de salir.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-dur">DUR</div><div class="timing-content"><div class="timing-title">1 gel isotónico en km 8-9 (opcional)</div><div class="timing-detail">S03: puedes probar el primer gel para practicar el habito. No lo necesitas energeticamente pero hay que entrenarlo. Gel de ~22 g carbos.</div></div></div>
+          <div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery en 30 min: critico</div><div class="timing-detail">Batido whey 40 g + 80 g avena + platano + leche 300 ml. 12 km generan ~780 kcal de deficit. Repón la mitad inmediatamente.</div></div></div>
+        </div>
+        <div class="gel-box">
+          <div class="gel-icon">&#127810;</div>
+          <div class="gel-content">
+            <div class="gel-title">S03: Gel opcional &mdash; entrenar el habito</div>
+            <div class="gel-detail">1 gel isotonico en km 8-9. No lo necesitas para acabar 12 km, pero si para aprender a tomarlo en movimiento sin detenerte. Elige un gel de facil apertura y practica abrirlo corriendo.</div>
+          </div>
+        </div>
+        <div class="day-meals">
+          <div class="meal-mini"><div class="mm-label">Pre-largo</div><div class="mm-name">Batido whey + avena 70 g + platano</div><div class="mm-kcal">520 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Km 8-9</div><div class="mm-name">1 gel isotonico (opcional)</div><div class="mm-kcal">88 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Post-largo (30 min)</div><div class="mm-name">Batido recovery completo</div><div class="mm-kcal">500 kcal</div></div>
+          <div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas + arroz + 2 huevos duros</div><div class="mm-kcal">658 kcal</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-summary">
+    <div class="ws-title">Resumen S03</div>
+    <div class="ws-grid">
+      <div class="ws-item"><div class="ws-n">27 km</div><div class="ws-l">Total rodaje</div></div>
+      <div class="ws-item"><div class="ws-n">12 km</div><div class="ws-l">Largo dominical</div></div>
+      <div class="ws-item"><div class="ws-n">2.220</div><div class="ws-l">kcal media/dia</div></div>
+      <div class="ws-item"><div class="ws-n">1.755</div><div class="ws-l">kcal quemadas running</div></div>
+      <div class="ws-item"><div class="ws-n">1</div><div class="ws-l">Gel (opcional, largo)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SEMANA 04 ========== -->
+<div id="w04" class="panel">
+  <div class="week-head">
+    <div>
+      <div class="week-title">Semana 04 &middot; 8&ndash;14 Junio &mdash; Pico de carga</div>
+      <div class="week-sub">Pliometria suave &middot; Step-up con salto al final de Fuerza A &middot; Largo 13 km con gel</div>
+    </div>
+    <div class="week-badges">
+      <span class="badge bg-green">29 km rodaje</span>
+      <span class="badge bg-purple">2 x Fuerza + Plio</span>
+      <span class="badge bg-amber">Gel obligatorio largo</span>
+    </div>
+  </div>
+  <div class="days-grid">
+    <div class="day-card rest">
+      <div class="day-header"><div class="day-label">LUN<br>8 jun</div><div><div class="day-session">Descanso total</div><div class="day-session-detail">Recuperacion post-S03</div></div><div><div class="day-kcal">1.886</div><div class="day-kcal-label">kcal</div></div></div>
+      <div class="day-body">
+        <div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:50%"></div></div><span class="mr-val">189 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:40%"></div></div><span class="mr-val">51 g</span></div></div>
+        <div class="day-timing"><div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Descanso activo mental</div><div class="timing-detail">Esta semana es el pico de carga. Llega al martes fresco. Come bien hoy, duerme 7h30min.</div></div></div></div>
+        <div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tortilla 3 huevos + tostadas</div><div class="mm-kcal">471 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh</div><div class="mm-kcal">660 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Edamame + queso fresco</div><div class="mm-kcal">282 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso + pan</div><div class="mm-kcal">469 kcal</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-card highlight">
+      <div class="day-header"><div class="day-label">MAR<br>9 jun</div><div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">8 km &middot; 6:55-7:15/km &middot; FC&lt;148 &middot; El ritmo baja ligeramente</div></div><div><div class="day-kcal">2.406</div><div class="day-kcal-label">kcal (+520)</div></div></div>
+      <div class="day-body">
+        <div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:76%"></div></div><span class="mr-val">282 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:33%"></div></div><span class="mr-val">48 g</span></div></div>
+        <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Platano + agua con electrolitos</div><div class="timing-detail">8 km con calor de junio. Si sales despues de 8h, lleva agua. Pre-rodaje igual: platano o 2 datiles.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Batido recovery en 30 min</div><div class="timing-detail">Whey + leche + platano. El miercoles hay fuerza con pliometria por primera vez. Recupera bien hoy.</div></div></div></div>
+        <div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano + agua electrolitos</div><div class="mm-kcal">90 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + espinacas</div><div class="mm-kcal">468 kcal</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header"><div class="day-label">MIE<br>10 jun</div><div><div class="day-session" style="color:var(--purple)">Fuerza A + PLIOMETRIA</div><div class="day-session-detail">Tren inferior + Core + Step-up con salto 2x8/pierna al final &middot; 50-60 min</div></div><div><div class="day-kcal">2.156</div><div class="day-kcal-label">kcal (+270)</div></div></div>
+      <div class="day-body">
+        <div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:60%"></div></div><span class="mr-val">225 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div></div>
+        <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60-90 min antes: carbos extra</div><div class="timing-detail">La sesion es 10-15 min mas larga por el step-up. Anade 30 g de avena o 1 platano al desayuno para llegar con glucogeno al final.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Ventana 45 min &mdash; proteina + carbos</div><div class="timing-detail">La pliometria genera mas dano muscular. Sube el post-entreno: whey 40 g + avena 50 g + leche. Prioridad maxima hoy.</div></div></div></div>
+        <div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno (extra carbos)</div><div class="mm-name">Batido whey + avena 70 g + platano</div><div class="mm-kcal">520 kcal</div></div><div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Lentejas + arroz + huevo</div><div class="mm-kcal">658 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-fuerza+plio</div><div class="mm-name">Requesón + avena + miel (recovery)</div><div class="mm-kcal">300 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tofu plancha + boniato + brocoli</div><div class="mm-kcal">474 kcal</div></div></div>
+        <div class="alert">RODILLA: cajón bajo 20-30 cm. Aterriza suave &mdash; sin ruido. Si hay molestia articular (no agujeta), para y lo dejamos para S05.</div>
+      </div>
+    </div>
+
+    <div class="day-card highlight">
+      <div class="day-header"><div class="day-label">JUE<br>11 jun</div><div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">8 km &middot; Piernas pueden ir cargadas por la pliometria &middot; Reduce si es necesario</div></div><div><div class="day-kcal">2.406</div><div class="day-kcal-label">kcal (+520)</div></div></div>
+      <div class="day-body">
+        <div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:76%"></div></div><span class="mr-val">282 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:33%"></div></div><span class="mr-val">48 g</span></div></div>
+        <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Escucha las piernas hoy</div><div class="timing-detail">Si las piernas van muy cargadas por la pliometria del miercoles, reduce a 5-6 km sin culpa. La pliometria genera mas DOMS que la fuerza sola.</div></div></div></div>
+        <div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano + agua</div><div class="mm-kcal">90 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche + cacao</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz basmati</div><div class="mm-kcal">655 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tortilla claras + guacamole + tostadas</div><div class="mm-kcal">475 kcal</div></div></div>
+      </div>
+    </div>
+
+    <div class="day-card"><div class="day-header"><div class="day-label">VIE<br>12 jun</div><div><div class="day-session" style="color:var(--purple)">Fuerza B</div><div class="day-session-detail">Estabilidad cadera + Movilidad &middot; Sin pliometria hoy</div></div><div><div class="day-kcal">2.086</div><div class="day-kcal-label">kcal (+200)</div></div></div>
+      <div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:55%"></div></div><span class="mr-val">205 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div></div>
+      <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">Sesion de recuperacion activa</div><div class="timing-detail">Fuerza B es mas ligera. Glúteo medio, dead bug, movilidad. Enfocate en la calidad del movimiento, no en los pesos.</div></div></div></div>
+      <div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Crepes avena + claras + yogur</div><div class="mm-kcal">460 kcal</div></div><div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Tortilla patata + ensalada</div><div class="mm-kcal">662 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">Yogur griego + nueces + arandanos</div><div class="mm-kcal">280 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + champiñones</div><div class="mm-kcal">468 kcal</div></div></div></div>
+    </div>
+
+    <div class="day-card"><div class="day-header"><div class="day-label">SAB<br>13 jun</div><div><div class="day-session" style="color:var(--text2)">Movilidad &mdash; Pre-carga 13 km</div><div class="day-session-detail">Foam roller + estiramientos &middot; Cena estrategica alta en carbos</div></div><div><div class="day-kcal">2.100</div><div class="day-kcal-label">kcal (carbos ++)</div></div></div>
+      <div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:55%"></div></div><span class="mr-val">140 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:80%"></div></div><span class="mr-val">300 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:28%"></div></div><span class="mr-val">40 g</span></div></div>
+      <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">13 km requieren pre-carga seria</div><div class="timing-detail">Cena alta en carbos (300-350 g carbos en el dia completo). Pasta o arroz en la cena. El domingo llevas gel obligatorio en km 9.</div></div></div></div>
+      <div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl proteico yogur + avena</div><div class="mm-kcal">468 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Tostada requesón + chia</div><div class="mm-kcal">278 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena PRE-CARGA</div><div class="mm-name">Arroz integral + lentejas + huevo (carbos max)</div><div class="mm-kcal">658 kcal</div></div></div>
+      <div class="alert success">Mañana 13 km. Gel obligatorio en km 9. La noche es la ultima ventana para cargar glucogeno. No falles aqui.</div>
+      </div>
+    </div>
+
+    <div class="day-card long-run">
+      <div class="day-header"><div class="day-label">DOM<br>14 jun</div><div><div class="day-session" style="color:var(--orange)">Largo suave &mdash; 13 km</div><div class="day-session-detail">7:00-7:15 /km &middot; FC&lt;148 &middot; 1 gel km 9 &middot; 500 ml agua minimo</div></div><div><div class="day-kcal">2.734</div><div class="day-kcal-label">kcal (+848)</div></div></div>
+      <div class="day-body">
+        <div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:90%"></div></div><span class="mr-val">335 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:30%"></div></div><span class="mr-val">43 g</span></div></div>
+        <div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">60-90 min antes: desayuno completo</div><div class="timing-detail">Batido whey 30 g + 70 g avena + platano + leche 300 ml. 520 kcal, 42 g P, 75 g C. Sal 30 min despues de despertarte.</div></div></div><div class="timing-block"><div class="timing-dot td-dur">GEL</div><div class="timing-content"><div class="timing-title">Gel obligatorio en km 9</div><div class="timing-detail">Tomalo aunque no tengas hambre. Este es el entrenamiento del entrenamiento. Practica abrir el gel corriendo, tomarlo sin parar, lavarlo con agua.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery &lt;30 min: maxima prioridad</div><div class="timing-detail">Batido whey 40 g + avena 80 g + platano + leche 350 ml. 13 km son ~845 kcal en tu caso. Repón 400-500 en la ventana inmediata.</div></div></div></div>
+        <div class="gel-box"><div class="gel-icon">&#127810;</div><div class="gel-content"><div class="gel-title">S04: 1 gel obligatorio &mdash; protocolo de carrera</div><div class="gel-detail">Gel en km 9. Abrelo sin parar, tomalo en 2-3 sorbos, bebe agua inmediatamente despues. Practica esto ahora para que en la TGC sea automatico. El cuerpo no absorbe bien los geles si no los comes con agua.</div></div></div>
+        <div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-largo</div><div class="mm-name">Batido whey + avena 70g + platano</div><div class="mm-kcal">520 kcal</div></div><div class="meal-mini"><div class="mm-label">Km 9</div><div class="mm-name">1 gel isotonico + agua</div><div class="mm-kcal">88 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-largo (&lt;30 min)</div><div class="mm-name">Batido recovery grande</div><div class="mm-kcal">530 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="week-summary">
+    <div class="ws-title">Resumen S04 &mdash; Pico de carga</div>
+    <div class="ws-grid"><div class="ws-item"><div class="ws-n">29 km</div><div class="ws-l">Total rodaje</div></div><div class="ws-item"><div class="ws-n">13 km</div><div class="ws-l">Largo dominical</div></div><div class="ws-item"><div class="ws-n">2.295</div><div class="ws-l">kcal media/dia</div></div><div class="ws-item"><div class="ws-n">1.885</div><div class="ws-l">kcal quemadas running</div></div><div class="ws-item"><div class="ws-n">1 gel</div><div class="ws-l">Obligatorio en largo</div></div></div>
+  </div>
+</div>
+
+<!-- ========== SEMANA 05 ========== -->
+<div id="w05" class="panel">
+  <div class="week-head">
+    <div><div class="week-title">Semana 05 &middot; 15&ndash;21 Junio &mdash; Primer largo real</div><div class="week-sub">15 km domingo &middot; Pliometria avanza &middot; Saltos laterales + Skipping</div></div>
+    <div class="week-badges"><span class="badge bg-green">32 km rodaje</span><span class="badge bg-purple">2 x Fuerza + Plio ampliada</span><span class="badge bg-orange">15 km + 1 gel km 10</span></div>
+  </div>
+  <div class="days-grid">
+    <div class="day-card rest"><div class="day-header"><div class="day-label">LUN<br>15 jun</div><div><div class="day-session">Descanso total</div><div class="day-session-detail">Recuperacion post-S04 (semana de maximo estres)</div></div><div><div class="day-kcal">1.886</div><div class="day-kcal-label">kcal</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:50%"></div></div><span class="mr-val">189 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:40%"></div></div><span class="mr-val">51 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Recuperacion maxima</div><div class="timing-detail">S04 fue la semana mas dura hasta ahora. Hoy come bien, duerme 7h30min, nada de actividad extra.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl yogur griego + avena</div><div class="mm-kcal">468 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Batido whey + leche + cacao</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Ensalada lentejas + queso cabra</div><div class="mm-kcal">471 kcal</div></div></div></div></div>
+
+    <div class="day-card highlight"><div class="day-header"><div class="day-label">MAR<br>16 jun</div><div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">8 km &middot; 6:55-7:15/km &middot; FC&lt;148 &middot; Antes 8h obligatorio</div></div><div><div class="day-kcal">2.406</div><div class="day-kcal-label">kcal (+520)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:76%"></div></div><span class="mr-val">282 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:33%"></div></div><span class="mr-val">48 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Antes de las 8h o despues 19h</div><div class="timing-detail">El calor de junio ya es serio. No negociamos el horario. Pre-rodaje: platano + 500 ml agua con pizca sal.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano + agua con sal</div><div class="mm-kcal">90 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz + huevo</div><div class="mm-kcal">655 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tofu plancha + boniato + brocoli</div><div class="mm-kcal">474 kcal</div></div></div></div></div>
+
+    <div class="day-card"><div class="day-header"><div class="day-label">MIE<br>17 jun</div><div><div class="day-session" style="color:var(--purple)">Fuerza A + PLIO AMPLIADA</div><div class="day-session-detail">Core + Saltos laterales 2x10 + Skipping bajo 2x20m &middot; 55-60 min</div></div><div><div class="day-kcal">2.200</div><div class="day-kcal-label">kcal (+314)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:72%"></div></div><span class="mr-val">180 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:62%"></div></div><span class="mr-val">232 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Carbos extra para la pliometria</div><div class="timing-detail">Saltos laterales y skipping necesitan energia rapida. Desayuno con 70 g avena o 2 platanos + whey antes de ir al gym.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery reforzado: mas dano muscular</div><div class="timing-detail">Pliometria ampliada = mas DOMS. Post-entreno: whey 40 g + avena 60 g + platano + leche. No escatimes en el recovery de hoy.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno (carbos extra)</div><div class="mm-name">Batido whey + avena 70g + platano</div><div class="mm-kcal">520 kcal</div></div><div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-fuerza+plio</div><div class="mm-name">Batido recovery grande</div><div class="mm-kcal">420 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso + pan</div><div class="mm-kcal">469 kcal</div></div></div><div class="alert">Saltos laterales: PEQUEÑOS y controlados. Objetivo = coordinacion neuromuscular, no altura. Para en cualquier molestia articular de rodilla.</div></div></div>
+
+    <div class="day-card highlight"><div class="day-header"><div class="day-label">JUE<br>18 jun</div><div><div class="day-session" style="color:var(--blue)">Rodaje suave</div><div class="day-session-detail">9 km &middot; 6:55-7:10/km &middot; El rodaje mas largo de la semana</div></div><div><div class="day-kcal">2.471</div><div class="day-kcal-label">kcal (+585)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:80%"></div></div><span class="mr-val">298 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:30%"></div></div><span class="mr-val">43 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">9 km: mas carbos pre-rodaje</div><div class="timing-detail">Platano + 1 rebanada pan con miel antes de salir. 9 km con calor son ~585 kcal. Sal antes de las 8h.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Platano + pan + miel</div><div class="mm-kcal">150 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-rodaje</div><div class="mm-name">Batido whey + leche + platano</div><div class="mm-kcal">350 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas + arroz + 2 huevos</div><div class="mm-kcal">658 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tortilla claras + guacamole</div><div class="mm-kcal">475 kcal</div></div></div></div></div>
+
+    <div class="day-card"><div class="day-header"><div class="day-label">VIE<br>19 jun</div><div><div class="day-session" style="color:var(--purple)">Fuerza B</div><div class="day-session-detail">Estabilidad cadera + Movilidad tobillo &middot; Sin pliometria</div></div><div><div class="day-kcal">2.086</div><div class="day-kcal-label">kcal (+200)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">175 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:55%"></div></div><span class="mr-val">205 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:36%"></div></div><span class="mr-val">50 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">Sesion de recuperacion activa</div><div class="timing-detail">El cuerpo lleva mucha carga acumulada. Fuerza B es el alivio. Movilidad de tobillo imprescindible &mdash; el domingo son 15 km.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tostadas + requesón + huevo pochado</div><div class="mm-kcal">473 kcal</div></div><div class="meal-mini"><div class="mm-label">Pre-fuerza</div><div class="mm-name">Pasta + tofu + pesto</div><div class="mm-kcal">663 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-fuerza</div><div class="mm-name">2 huevos + zanahoria + hummus</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + espinacas + tostada</div><div class="mm-kcal">468 kcal</div></div></div></div></div>
+
+    <div class="day-card"><div class="day-header"><div class="day-label">SAB<br>20 jun</div><div><div class="day-session" style="color:var(--text2)">Movilidad &mdash; Pre-carga 15 km</div><div class="day-session-detail">La cena mas importante de las 5 semanas</div></div><div><div class="day-kcal">2.150</div><div class="day-kcal-label">kcal (carbos MAX)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:50%"></div></div><span class="mr-val">130 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:88%"></div></div><span class="mr-val">330 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:24%"></div></div><span class="mr-val">35 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">15 km manana: pre-carga maxima</div><div class="timing-detail">Carbos maximos en el dia completo. Pasta doble en la cena. Grasa minima (ralentiza el vaciado gastrico). Acuestate a las 23h como maximo.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Batido whey + avena 80g + platano</div><div class="mm-kcal">560 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Arroz basmati + garbanzos (ración doble)</div><div class="mm-kcal">655 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Pan integral + miel + requeson</div><div class="mm-kcal">280 kcal</div></div><div class="meal-mini"><div class="mm-label">CENA PRE-CARGA MAX</div><div class="mm-name">Pasta 120g (seco) + tofu + pesto light</div><div class="mm-kcal">750 kcal</div></div></div><div class="alert success">15 km. La cena del sabado no se negocia: pasta o arroz, proteina magra (claras/tofu/requesón), cero grasas altas. Si tienes dudas, elige pasta.</div></div></div>
+
+    <div class="day-card long-run"><div class="day-header"><div class="day-label">DOM<br>21 jun</div><div><div class="day-session" style="color:var(--orange)">Largo suave &mdash; 15 km &mdash; PRIMER LARGO REAL</div><div class="day-session-detail">7:00-7:15 /km &middot; FC&lt;148 &middot; Agua + 1 gel km 10 &middot; Antes de 8h obligatorio</div></div><div><div class="day-kcal">2.861</div><div class="day-kcal-label">kcal (+975)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:92%"></div></div><span class="mr-val">343 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:30%"></div></div><span class="mr-val">43 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">90 min antes: desayuno completo</div><div class="timing-detail">Batido whey 35 g + 80 g avena + platano entero + leche 350 ml + pizca sal. 600 kcal, 48 g P, 85 g C. Sal 90 min despues de despertarte.</div></div></div><div class="timing-block"><div class="timing-dot td-dur">GEL</div><div class="timing-content"><div class="timing-title">Gel obligatorio en km 10 exacto</div><div class="timing-detail">15 km con calor = 975 kcal quemadas. El gel en km 10 evita el bajón de los ultimos 5 km. Abrelo corriendo, 2-3 sorbos, agua inmediatamente.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery en &lt;20 min: maxima urgencia</div><div class="timing-detail">Batido: whey 45 g + avena 90 g + platano + leche 400 ml + miel 15 g. 600+ kcal. Los 30 min post-largo son la ventana de oro para la recuperacion muscular.</div></div></div></div><div class="gel-box"><div class="gel-icon">&#127810;</div><div class="gel-content"><div class="gel-title">S05: 1 gel km 10 &mdash; protocolo establecido</div><div class="gel-detail">Ya no es opcional. El largo de 15 km en calor necesita el gel. Lleva siempre agua en la manga contraria al gel. El gel SIN agua irrita el estomago. Practica el gesto hasta que sea automatico.</div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-largo (90 min antes)</div><div class="mm-name">Batido whey + avena 80g + platano</div><div class="mm-kcal">600 kcal</div></div><div class="meal-mini"><div class="mm-label">Km 10</div><div class="mm-name">1 gel isotonico + agua</div><div class="mm-kcal">88 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-largo (&lt;20 min)</div><div class="mm-name">Batido recovery extra grande</div><div class="mm-kcal">620 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas + arroz + 2 huevos (extra)</div><div class="mm-kcal">658 kcal</div></div></div></div></div>
+  </div>
+  <div class="week-summary"><div class="ws-title">Resumen S05</div><div class="ws-grid"><div class="ws-item"><div class="ws-n">32 km</div><div class="ws-l">Total rodaje</div></div><div class="ws-item"><div class="ws-n">15 km</div><div class="ws-l">Largo dominical</div></div><div class="ws-item"><div class="ws-n">2.380</div><div class="ws-l">kcal media/dia</div></div><div class="ws-item"><div class="ws-n">2.080</div><div class="ws-l">kcal quemadas running</div></div><div class="ws-item"><div class="ws-n">1 gel</div><div class="ws-l">Km 10 del largo</div></div></div></div>
+</div>
+
+<!-- ========== SEMANA 06 ========== -->
+<div id="w06" class="panel">
+  <div class="week-head">
+    <div><div class="week-title">Semana 06 &middot; 22&ndash;28 Junio &mdash; DESCARGA</div><div class="week-sub">Sin fuerza &middot; Sin pliometria &middot; Rodajes muy suaves &middot; Nutricion ajustada a la baja</div></div>
+    <div class="week-badges"><span class="badge bg-amber">22 km rodaje</span><span class="badge" style="background:var(--red-bg);color:var(--red);border:1px solid rgba(224,96,96,.2)">0 Fuerza</span><span class="badge bg-amber">kcal reducidas</span></div>
+  </div>
+  <div class="days-grid">
+    <div class="day-card rest deload-day"><div class="day-header"><div class="day-label">LUN<br>22 jun</div><div><div class="day-session">Descanso total</div><div class="day-session-detail">Primera descarga despues de 4 semanas de carga</div></div><div><div class="day-kcal" style="color:var(--amber)">1.786</div><div class="day-kcal-label">kcal (descarga)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:42%"></div></div><span class="mr-val">160 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:38%"></div></div><span class="mr-val">50 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Descarga: baja los carbos, mantén proteina</div><div class="timing-detail">Sin entrenamiento de carga = menos carbos necesarios. Proteina se mantiene para proteger el musculo ganado. No te sientas culpable por comer menos.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tortilla 3 huevos + tostadas</div><div class="mm-kcal">471 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Ensalada lentejas + queso cabra</div><div class="mm-kcal">471 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Yogur griego + nueces</div><div class="mm-kcal">280 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras + espinacas (sin tostada)</div><div class="mm-kcal">380 kcal</div></div></div></div></div>
+
+    <div class="day-card deload-day"><div class="day-header"><div class="day-label">MAR<br>23 jun</div><div><div class="day-session" style="color:var(--amber)">Rodaje muy suave</div><div class="day-session-detail">6 km &middot; 7:15-7:45/km &middot; FC&lt;140 &middot; Mucho mas lento que de costumbre</div></div><div><div class="day-kcal" style="color:var(--amber)">2.176</div><div class="day-kcal-label">kcal (+390)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:60%"></div></div><span class="mr-val">224 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:38%"></div></div><span class="mr-val">51 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Pre-rodaje minimo: solo agua</div><div class="timing-detail">6 km en Z2 muy suave. Puedes hacerlo en ayunas si es por la manana. Post: batido ligero o desayuno normal.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Solo agua (opcional platano)</div><div class="mm-kcal">0-90 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-rodaje / Desayuno</div><div class="mm-name">Bowl yogur griego + avena</div><div class="mm-kcal">468 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz</div><div class="mm-kcal">655 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Tofu plancha + boniato + brocoli</div><div class="mm-kcal">474 kcal</div></div></div></div></div>
+
+    <div class="day-card deload-day"><div class="day-header"><div class="day-label">MIE<br>24 jun</div><div><div class="day-session" style="color:var(--amber)">Movilidad larga &mdash; 40 min</div><div class="day-session-detail">Sesion especial S06: foam roller + movilidad profunda + respiracion</div></div><div><div class="day-kcal" style="color:var(--amber)">1.886</div><div class="day-kcal-label">kcal (base)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:50%"></div></div><span class="mr-val">189 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:40%"></div></div><span class="mr-val">51 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Sin fuerza. Movilidad pura.</div><div class="timing-detail">40 min: foam roller + 90/90 + psoas + piriforme + movilidad toracica + respiracion diafragmatica. Nada mas. El cuerpo absorbe aqui el trabajo de 4 semanas.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Batido whey + avena + platano</div><div class="mm-kcal">465 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Lentejas + arroz + huevo</div><div class="mm-kcal">658 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">2 huevos + zanahoria + hummus</div><div class="mm-kcal">285 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso (sin pan)</div><div class="mm-kcal">380 kcal</div></div></div><div class="alert info">No añadas fuerza aunque te sientas fresco. Ese es exactamente el error que se paga en la S07.</div></div></div>
+
+    <div class="day-card deload-day"><div class="day-header"><div class="day-label">JUE<br>25 jun</div><div><div class="day-session" style="color:var(--amber)">Rodaje muy suave</div><div class="day-session-detail">6 km &middot; 7:15-7:45/km &middot; FC&lt;140 &middot; Conversacional total</div></div><div><div class="day-kcal" style="color:var(--amber)">2.176</div><div class="day-kcal-label">kcal (+390)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:60%"></div></div><span class="mr-val">224 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:38%"></div></div><span class="mr-val">51 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Rodaje por placer, no por carga</div><div class="timing-detail">6 km al ritmo que salga. Sin reloj de frecuencia cardiaca si quieres. Este rodaje es relajacion activa.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-rodaje</div><div class="mm-name">Opcional: platano o nada</div><div class="mm-kcal">0-90 kcal</div></div><div class="meal-mini"><div class="mm-label">Post / Desayuno</div><div class="mm-name">Crepes avena + claras + yogur</div><div class="mm-kcal">460 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Ensalada lentejas + queso cabra</div><div class="mm-kcal">471 kcal</div></div></div></div></div>
+
+    <div class="day-card rest deload-day"><div class="day-header"><div class="day-label">VIE<br>26 jun</div><div><div class="day-session" style="color:var(--amber)">Descanso activo &mdash; Paseo</div><div class="day-session-detail">20-30 min de paseo. Sin zapatillas de correr. Sin gimnasio.</div></div><div><div class="day-kcal" style="color:var(--amber)">1.786</div><div class="day-kcal-label">kcal (descarga)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:70%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:42%"></div></div><span class="mr-val">160 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:38%"></div></div><span class="mr-val">50 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-rest">Z</div><div class="timing-content"><div class="timing-title">Pre-carga suave para el largo del domingo</div><div class="timing-detail">Hoy comes normal, carbos moderados. La carga fuerte de glucogeno es el sabado en la cena, no hoy.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Tortilla 3 huevos + tostadas</div><div class="mm-kcal">471 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Pasta + tofu + pesto (porcion normal)</div><div class="mm-kcal">663 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Edamame + queso fresco</div><div class="mm-kcal">282 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Revuelto claras (ligero)</div><div class="mm-kcal">350 kcal</div></div></div></div></div>
+
+    <div class="day-card deload-day"><div class="day-header"><div class="day-label">SAB<br>27 jun</div><div><div class="day-session" style="color:var(--amber)">Movilidad</div><div class="day-session-detail">Foam roller + estiramientos &middot; Casa &middot; Pre-carga para largo de descarga</div></div><div><div class="day-kcal" style="color:var(--amber)">2.000</div><div class="day-kcal-label">kcal (carbos moderados)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:60%"></div></div><span class="mr-val">150 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:68%"></div></div><span class="mr-val">255 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:32%"></div></div><span class="mr-val">45 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">HOY</div><div class="timing-content"><div class="timing-title">Pre-carga moderada &mdash; largo de descarga</div><div class="timing-detail">Manana son solo 10 km en Z2 muy suave. Pre-carga moderada: cena con pasta o arroz, pero no al nivel de S05. El cuerpo ya esta lleno despues de la descarga.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Desayuno</div><div class="mm-name">Bowl yogur griego + avena</div><div class="mm-kcal">468 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Curry garbanzos + arroz</div><div class="mm-kcal">655 kcal</div></div><div class="meal-mini"><div class="mm-label">Snack</div><div class="mm-name">Tostada requesón + chia</div><div class="mm-kcal">278 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena pre-carga</div><div class="mm-name">Pasta + tofu (porcion moderada)</div><div class="mm-kcal">550 kcal</div></div></div></div></div>
+
+    <div class="day-card long-run deload-day"><div class="day-header"><div class="day-label">DOM<br>28 jun</div><div><div class="day-session" style="color:var(--amber)">Largo de descarga &mdash; 10 km</div><div class="day-session-detail">7:10-7:30 /km &middot; FC&lt;145 &middot; Mas lento que el largo de S02. Sin presion.</div></div><div><div class="day-kcal" style="color:var(--amber)">2.437</div><div class="day-kcal-label">kcal (+551)</div></div></div><div class="day-body"><div class="day-macros"><div class="mr"><span class="mr-label">Proteina</span><div class="mr-bar"><div class="mr-fill fp" style="width:66%"></div></div><span class="mr-val">168 g</span></div><div class="mr"><span class="mr-label">Carbos</span><div class="mr-bar"><div class="mr-fill fc" style="width:80%"></div></div><span class="mr-val">300 g</span></div><div class="mr"><span class="mr-label">Grasa</span><div class="mr-bar"><div class="mr-fill ff" style="width:30%"></div></div><span class="mr-val">43 g</span></div></div><div class="day-timing"><div class="timing-block"><div class="timing-dot td-pre">PRE</div><div class="timing-content"><div class="timing-title">Desayuno solido 60 min antes</div><div class="timing-detail">Tostadas + requesón + huevo pochado. 10 km suaves no requieren carga especial. Este largo es de sensaciones, no de rendimiento.</div></div></div><div class="timing-block"><div class="timing-dot td-post">POST</div><div class="timing-content"><div class="timing-title">Recovery normal post-10km</div><div class="timing-detail">Batido whey + leche + platano. 10 km en descarga = ~650 kcal quemadas. La recuperacion es mas rapida que en semanas anteriores.</div></div></div></div><div class="day-meals"><div class="meal-mini"><div class="mm-label">Pre-largo</div><div class="mm-name">Tostadas + requesón + huevo pochado</div><div class="mm-kcal">473 kcal</div></div><div class="meal-mini"><div class="mm-label">Post-largo</div><div class="mm-name">Batido whey + leche + platano</div><div class="mm-kcal">350 kcal</div></div><div class="meal-mini"><div class="mm-label">Comida</div><div class="mm-name">Bowl quinoa + tempeh + verduras</div><div class="mm-kcal">660 kcal</div></div><div class="meal-mini"><div class="mm-label">Cena</div><div class="mm-name">Crema calabaza + queso + pan</div><div class="mm-kcal">469 kcal</div></div></div></div></div>
+  </div>
+  <div class="week-summary"><div class="ws-title">Resumen S06 &mdash; Descarga</div><div class="ws-grid"><div class="ws-item"><div class="ws-n" style="color:var(--amber)">22 km</div><div class="ws-l">Total rodaje (-31%)</div></div><div class="ws-item"><div class="ws-n" style="color:var(--amber)">10 km</div><div class="ws-l">Largo de descarga</div></div><div class="ws-item"><div class="ws-n" style="color:var(--amber)">1.980</div><div class="ws-l">kcal media/dia</div></div><div class="ws-item"><div class="ws-n" style="color:var(--amber)">1.430</div><div class="ws-l">kcal quemadas running</div></div><div class="ws-item"><div class="ws-n" style="color:var(--amber)">0</div><div class="ws-l">Sesiones de fuerza</div></div></div></div>
+</div>
+
+</main>
+
+<footer style="text-align:center;padding:2rem;font-size:12px;color:var(--text3);border-top:1px solid var(--border);">
+  Plan nutricional periodizado por <strong style="color:var(--green)">Nutrymuth</strong> &middot; Basado en el plan de entrenamiento TrailCoach S02&ndash;S06<br>
+  <span style="margin-top:4px;display:block;">Mario Monzon &middot; TGC Advanced 2027 &middot; Fase 1 recuperacion de base &middot; Mayo&ndash;Junio 2026</span>
+</footer>
+
+<script>
+function showW(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.wbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
